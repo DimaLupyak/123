@@ -23,7 +23,7 @@ namespace ImageSegmentationModel.Segmentation
             nodes = new FhNode[width, height];
             for (int j = 0; j < height; j++)
                 for (int i = 0; i < width; i++)
-                    nodes[i,j] = new FhNode();
+                    nodes[i, j] = new FhNode();
             components = new FhComponent[width * height];
             for (int i = 0; i < components.Length; i++)
                 components[i] = new FhComponent();
@@ -44,7 +44,7 @@ namespace ImageSegmentationModel.Segmentation
                     // initialize component
                     components[c].Index = -1;
                     components[c].Count = 1;
-                    components[c].IntPtau = k;
+                    components[c].IntPtau = -1;
                     components[c].First = components[c].Last = nodes[i, j];
                     // initialize edge
                     if (((i + 1) < width) && ((j - 1) >= 0))
@@ -78,7 +78,8 @@ namespace ImageSegmentationModel.Segmentation
                 while (actual != null)
                 {
                     if ((actual.V1.Component != actual.V2.Component) &&
-                        ((double)idx < Math.Min(actual.V1.Component.IntPtau, actual.V2.Component.IntPtau)))
+                        ((double)idx < Math.Min(actual.V1.Component.IntPtau + k / actual.V1.Component.Count,
+                                                actual.V2.Component.IntPtau + k / actual.V2.Component.Count)))
                     {
                         FhComponent c1, c2;
                         if (actual.V1.Component.Count >= actual.V2.Component.Count)
@@ -110,7 +111,7 @@ namespace ImageSegmentationModel.Segmentation
             c1.Last.Next = c2.First;
             c1.Last = c2.Last;
             c1.Count += c2.Count;
-            c1.IntPtau = weight + k / (double)c1.Count;
+            if (weight > c1.IntPtau) c1.IntPtau = weight;
         }
 
         private int[,] ReindexSegments(int width, int height)
