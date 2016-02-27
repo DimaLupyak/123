@@ -37,6 +37,19 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("Sigma");
             }
         }
+        private int _minSize = 1;
+        public int MinSize
+        {
+            get
+            {
+                return _minSize;
+            }
+            set
+            {
+                _minSize = value;
+                RaisePropertyChanged("MinSize");
+            }
+        }
         public MainViewModel()
         {
 
@@ -89,7 +102,7 @@ namespace ImageSegmentation.ViewModel
                     {
                         GaussianFilter filter = new GaussianFilter();
                         filter.Filter(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, Sigma);
-                        int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K);
+                        int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize);
                         
                             SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments));
                     }

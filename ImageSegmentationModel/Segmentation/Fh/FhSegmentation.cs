@@ -73,7 +73,6 @@ namespace ImageSegmentationModel.Segmentation
         {
             for (int idx = 0; idx < 256; idx++)
             {
-                int append = 0;
                 FhEdge actual = edgePockets[idx];
                 while (actual != null)
                 {
@@ -92,15 +91,42 @@ namespace ImageSegmentationModel.Segmentation
                             c1 = actual.V2.Component;
                             c2 = actual.V1.Component;
                         }
-                        AppendComponent(c1, c2, idx, k);
-                        append++;
+                        AppendComponent(c1, c2, idx);
                     }
                     actual = actual.Next;
                 }
             }
         }
 
-        private void AppendComponent(FhComponent c1, FhComponent c2, double weight, double k)
+        private void MargeSmall(int minSize)
+        {
+            for (int idx = 0; idx < 256; idx++)
+            {
+                FhEdge actual = edgePockets[idx];
+                while (actual != null)
+                {
+                    if ((actual.V1.Component != actual.V2.Component) &&
+                        (actual.V1.Component.Count < minSize || actual.V2.Component.Count < minSize))
+                    {
+                        FhComponent c1, c2;
+                        if (actual.V1.Component.Count >= actual.V2.Component.Count)
+                        {
+                            c1 = actual.V1.Component;
+                            c2 = actual.V2.Component;
+                        }
+                        else
+                        {
+                            c1 = actual.V2.Component;
+                            c2 = actual.V1.Component;
+                        }
+                        AppendComponent(c1, c2, idx);
+                    }
+                    actual = actual.Next;
+                }
+            }
+        }
+
+        private void AppendComponent(FhComponent c1, FhComponent c2, double weight)
         {
             FhNode nodeB = c2.First;
             while (nodeB != null)
@@ -135,13 +161,14 @@ namespace ImageSegmentationModel.Segmentation
 
         #region IFhSegmentation members
 
-        public int[,] BuildSegments(int width, int height, byte[,] pixels, int k)
+        public int[,] BuildSegments(int width, int height, byte[,] pixels, int k, int minSize)
         {
             try
             {
                 CreateArrays(width, height);
                 FillArrays(width, height, pixels, k);
                 DoAlgorithm(k);
+                MargeSmall(minSize);
                 return ReindexSegments(width, height);
             }
             catch (Exception)

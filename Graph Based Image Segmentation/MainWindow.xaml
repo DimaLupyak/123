@@ -26,6 +26,9 @@
             <GroupBox Header="Sigma" ToolTip="діаметр зглажування Гаусса">
                 <TextBox Text ="{Binding Sigma, Mode=TwoWay}" MinWidth="80"/>
             </GroupBox>
+            <GroupBox Header="Min Size" ToolTip="Мінімальний розмір сегменту">
+                <TextBox Text ="{Binding MinSize, Mode=TwoWay}" MinWidth="80"/>
+            </GroupBox>
         </StackPanel>
 
         <Image Grid.Row="1" Source="{Binding OriginImage.Image}" StretchDirection="DownOnly" />

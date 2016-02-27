@@ -15,7 +15,7 @@ namespace ImageSegmentationModel.Segmentation
 
         public IFhSegmentation GetFhSegmentation()
         {
-            return new FhSegmentation();
+            return new FhSegmentation1();
         }
     }
 }

@@ -78,9 +78,9 @@ namespace ImageSegmentationModel.Segmentation
 
         #region IFhSegmentation members
 
-        public int[,] BuildSegments(int width, int height, byte[,] pixels, int k)
+        public int[,] BuildSegments(int width, int height, byte[,] pixels, int k, int minSize)
         {
-            Graph1 graph= GetGraph(width, height, pixels, k);
+            Graph1 graph = GetGraph(width, height, pixels, k);
 
             graph.Edges.Sort();
             foreach (Edge1 edge in graph.Edges)
@@ -91,9 +91,8 @@ namespace ImageSegmentationModel.Segmentation
                     Segment1 b = edge.B.Segment;
                     if (a.Id != b.Id)
                     {
-                        if (edge.Weight > MInt(a, b))
-                            continue;
-                        MergeSegment(a, b, edge.Weight);
+                        if (edge.Weight < MInt(a, b))
+                            MergeSegment(a, b, edge.Weight);
                     }
                 }
                 catch (Exception)
@@ -101,7 +100,23 @@ namespace ImageSegmentationModel.Segmentation
                     throw;
                 }
             }
-
+            foreach (Edge1 edge in graph.Edges)
+            {
+                try
+                {
+                    Segment1 a = edge.A.Segment;
+                    Segment1 b = edge.B.Segment;
+                    if (a.Id != b.Id)
+                    {
+                        if (a.Nodes.Count < minSize || b.Nodes.Count < minSize)
+                            MergeSegment(a, b, edge.Weight);
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
             int[,] segments = new int[width, height];
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)
