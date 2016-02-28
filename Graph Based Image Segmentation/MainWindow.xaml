@@ -3,9 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:model="clr-namespace:ImageSegmentationModel.Segmentation;assembly=ImageSegmentationModel"
         xmlns:local="clr-namespace:ImageSegmentation.View"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+                            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="model:SegmentationMethod"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -16,7 +26,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Height="40">
+        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Height="50">
             <Button Content="Open" Command="{Binding OpenImageCommand}" IsEnabled="{Binding CanNewExecute}" Width="100"/>
             <Button Content="Segmentation" Command="{Binding SegmentImageCommand}" IsEnabled="{Binding CanNewExecute}" Width="100"/>
             <Button Content="Gaussian" Command="{Binding GaussianImageCommand}" IsEnabled="{Binding CanNewExecute}" Width="100"/>
@@ -29,6 +39,11 @@
             <GroupBox Header="Min Size" ToolTip="Мінімальний розмір сегменту">
                 <TextBox Text ="{Binding MinSize, Mode=TwoWay}" MinWidth="80"/>
             </GroupBox>
+            <GroupBox Header="Segmentation Method">
+                <ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
+                  SelectedItem="{Binding Path=Method}" MinWidth="80"/>
+            </GroupBox>
+
         </StackPanel>
 
         <Image Grid.Row="1" Source="{Binding OriginImage.Image}" StretchDirection="DownOnly" />

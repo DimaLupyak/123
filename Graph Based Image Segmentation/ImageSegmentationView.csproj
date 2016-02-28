@@ -97,10 +97,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ImageSegmentationModel\ImageSegmentationModel.csproj">
+      <Project>{ecf9098a-b68d-475b-b3b6-24468aa94207}</Project>
+      <Name>ImageSegmentationModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ImageSegmentationViewModel\ImageSegmentationViewModel.csproj">
       <Project>{25d61b41-5f81-447d-a443-f9b5aefd4ee0}</Project>
       <Name>ImageSegmentationViewModel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

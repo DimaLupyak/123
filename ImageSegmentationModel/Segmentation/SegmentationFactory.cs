@@ -5,6 +5,12 @@ using System.Text;
 
 namespace ImageSegmentationModel.Segmentation
 {
+
+    public enum SegmentationMethod
+    {
+        Original, WithoutSort
+    }
+
     public class SegmentationFactory
     {
         private static SegmentationFactory _instance;
@@ -13,9 +19,20 @@ namespace ImageSegmentationModel.Segmentation
             get { return _instance ?? (_instance = new SegmentationFactory()); }
         }
 
-        public IFhSegmentation GetFhSegmentation()
+       
+
+        public IFhSegmentation GetFhSegmentation(SegmentationMethod method)
         {
-            return new FhSegmentation1();
+            switch (method)
+            {
+                case SegmentationMethod.Original:
+                    return new FhSegmentation1();
+                case SegmentationMethod.WithoutSort:
+                    return new FhSegmentation();
+                default:
+                    return new FhSegmentation1();
+            }
+            
         }
     }
 }

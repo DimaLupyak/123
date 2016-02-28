@@ -50,6 +50,19 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("MinSize");
             }
         }
+        private SegmentationMethod _method = SegmentationMethod.Original;
+        public SegmentationMethod Method
+        {
+            get
+            {
+                return _method;
+            }
+            set
+            {
+                _method = value;
+                RaisePropertyChanged("Method");
+            }
+        }
         public MainViewModel()
         {
 
@@ -96,7 +109,7 @@ namespace ImageSegmentation.ViewModel
                 CanNewExecute = false;
                 try
                 {
-                    IFhSegmentation segmentation = SegmentationFactory.Instance.GetFhSegmentation();
+                    IFhSegmentation segmentation = SegmentationFactory.Instance.GetFhSegmentation(Method);
                     byte[,] pixels = ImageHelper.GetPixels(OriginImage.Bitmap);
                     if (pixels != null)
                     {
