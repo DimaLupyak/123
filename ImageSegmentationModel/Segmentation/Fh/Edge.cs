@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImageSegmentationModel.Segmentation
+namespace ImageSegmentationModel.Segmentation.Fh
 {
-    class Edge1 : IComparable
+    class Edge : IComparable
     {
         #region constructors
 
-        public Edge1(Node1 a, Node1 b, int weight)
+        public Edge(Node a, Node b, int weight)
         {
             A = a;
             B = b;
@@ -20,8 +20,8 @@ namespace ImageSegmentationModel.Segmentation
 
         #region public members
 
-        public Node1 A { get; private set; }
-        public Node1 B { get; private set; }
+        public Node A { get; private set; }
+        public Node B { get; private set; }
 
         public int Weight { get; private set; }
 
@@ -33,7 +33,7 @@ namespace ImageSegmentationModel.Segmentation
         {
             if (obj == null) return 1;
 
-            Edge1 edge = obj as Edge1;
+            Edge edge = obj as Edge;
             if (edge != null)
                 return this.Weight.CompareTo(edge.Weight);
             else

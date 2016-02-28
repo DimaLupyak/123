@@ -29,11 +29,11 @@ namespace ImageSegmentationModel.Segmentation
             switch (method)
             {
                 case SegmentationMethod.Original:
-                    return new FhSegmentation1();
+                    return new Fh.FhSegmentation();
                 case SegmentationMethod.WithoutSort:
-                    return new FhSegmentation();
+                    return new FhDSU.FhSegmentation();
                 default:
-                    return new FhSegmentation1();
+                    return new Fh.FhSegmentation();
             }
             
         }

@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImageSegmentationModel.Segmentation
+namespace ImageSegmentationModel.Segmentation.Fh
 {
-    class Segment1
+    class Segment
     {
         #region constructors
 
-        public Segment1(int id, int k)
+        public Segment(int id, int k)
         {
             Id = id;
             _k = k;
-            Nodes = new List<Node1>();
+            Nodes = new List<Node>();
         }
 
         #endregion
@@ -27,7 +27,7 @@ namespace ImageSegmentationModel.Segmentation
         #region public members
 
         public int Id { get; private set; }
-        public List<Node1> Nodes { get; private set; }
+        public List<Node> Nodes { get; private set; }
 
         private double _int;
         private double _threshold;
@@ -43,18 +43,18 @@ namespace ImageSegmentationModel.Segmentation
             _threshold = _k;
         }
 
-        public void AddNode(Node1 node)
+        public void AddNode(Node node)
         {
             Clear();
             Nodes.Add(node);
         }
 
-        public void AddNodes(List<Node1> nodes, int edgeWeight)
+        public void AddNodes(List<Node> nodes, int edgeWeight)
         {
-            foreach (Node1 node in nodes)
+            foreach (Node node in nodes)
                 node.Segment = this;
             Nodes.AddRange(nodes);
-            _int = edgeWeight;
+             _int = edgeWeight;
             _threshold = _k / Nodes.Count;
         }
 

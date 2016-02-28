@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImageSegmentationModel.Segmentation
+namespace ImageSegmentationModel.Segmentation.Fh
 {
-    class Node1
+    class Node
     {
         #region constructors
 
-        public Node1(int x, int y, Segment1 segment)
+        public Node(int x, int y, Segment segment)
         {
             X = x;
             Y = y;
@@ -23,7 +23,7 @@ namespace ImageSegmentationModel.Segmentation
         public int X { get; private set; }
         public int Y { get; private set; }
 
-        public Segment1 Segment { get; set; }
+        public Segment Segment { get; set; }
 
         #endregion
     }

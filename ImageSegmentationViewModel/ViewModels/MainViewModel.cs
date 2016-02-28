@@ -38,7 +38,7 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("ExecutionTime");
             }
         }
-        private float _sigma = 1;
+        private float _sigma = 0.8f;
         public float Sigma
         {
             get
@@ -64,7 +64,7 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("MinSize");
             }
         }
-        private SegmentationMethod _method = SegmentationMethod.Original;
+        private SegmentationMethod _method = SegmentationMethod.WithoutSort;
         public SegmentationMethod Method
         {
             get
@@ -119,7 +119,7 @@ namespace ImageSegmentation.ViewModel
         private void OpenImage()
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.Filter = "Image files (*.gif;*.jpg;*.jpe;*.png;*.bmp;*.dib;*.tif;*.wmf;*.ras;*.eps;*.pcx;*psd;*.tga)|*.gif;*.jpg;*.jpe;*.png;*.bmp;*.dib;*.tif;*.wmf;*.ras;*.eps;*.pcx;*psd;*.tga";
+            dlg.Filter = "Image files (*.gif;*.jpg;*.jpe;*.png;*.bmp;*.dib;*.tif;*.tifF;*.wmf;*.ras;*.eps;*.pcx;*psd;*.tga)|*.gif;*.jpg;*.jpe;*.png;*.bmp;*.dib;*.tif;*.tifF;*.wmf;*.ras;*.eps;*.pcx;*psd;*.tga";
 
             Nullable<bool> result = dlg.ShowDialog();
 

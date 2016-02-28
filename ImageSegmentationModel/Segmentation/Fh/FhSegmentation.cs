@@ -3,158 +3,75 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImageSegmentationModel.Segmentation
+namespace ImageSegmentationModel.Segmentation.Fh
 {
-    public class FhSegmentation : IFhSegmentation
+    class FhSegmentation : IFhSegmentation
     {
-        #region private fields
+        #region generate graph private members
 
-        private FhNode[,] nodes;
-        private FhComponent[] components;
-        private FhEdge[] edges;
-        private FhEdge[] edgePockets;
+        private List<Segment> GetSegments(int count, int k)
+        {
+            List<Segment> segments = new List<Segment>(count);
+            for (int id = 0; id < count; id++)
+                segments.Add(new Segment(id, k));
+            return segments;
+        }
+
+        private Node[,] GetNode(int width, int height, List<Segment> segments)
+        {
+            Node[,] nodes = new Node[width, height];
+            for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
+                {
+                    nodes[x, y] = new Node(x, y, segments[y * width + x]);
+                    segments[y * width + x].AddNode(nodes[x, y]);
+                }
+            return nodes;
+        }
+
+        private List<Edge> BuildEdges(int width, int height, byte[,] pixels, Node[,] nodes, ConnectingMethod connectingMethod)
+        {
+            List<Edge> edges = new List<Edge>();
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                {
+                    byte pixel1 = pixels[x, y];
+                    if (x < (width - 1))
+                    {
+                        if (y > 0 && connectingMethod == ConnectingMethod.Connecred_8)
+                            edges.Add(new Edge(nodes[x, y], nodes[x + 1, y - 1], Math.Abs(pixel1 - pixels[x + 1, y - 1]))); // Up-Right
+                        edges.Add(new Edge(nodes[x, y], nodes[x + 1, y], Math.Abs(pixel1 - pixels[x + 1, y]))); // Right
+                        if (y < (height - 1) && connectingMethod == ConnectingMethod.Connecred_8)
+                            edges.Add(new Edge(nodes[x, y], nodes[x + 1, y + 1], Math.Abs(pixel1 - pixels[x + 1, y + 1]))); // Down-Right
+                    }
+                    if (y < (height - 1))
+                        edges.Add(new Edge(nodes[x, y], nodes[x, y + 1], Math.Abs(pixel1 - pixels[x, y + 1]))); // Down
+                }
+            return edges;
+        }
+
+        private Graph GetGraph(int width, int height, byte[,] pixels, int k, ConnectingMethod connectingMethod)
+        {
+            List<Segment> segments = GetSegments(width * height, k);
+            Node[,] nodes = GetNode(width, height, segments);
+            List<Edge> edges = BuildEdges(width, height, pixels, nodes, connectingMethod);
+
+            return new Graph(nodes, edges, segments);
+        }
 
         #endregion
 
-        #region private methods
+        #region algorithm private members
 
-        private void CreateArrays(int width, int height)
+        private double MInt(Segment a, Segment b)
         {
-            nodes = new FhNode[width, height];
-            for (int j = 0; j < height; j++)
-                for (int i = 0; i < width; i++)
-                    nodes[i, j] = new FhNode();
-            components = new FhComponent[width * height];
-            for (int i = 0; i < components.Length; i++)
-                components[i] = new FhComponent();
-            edges = new FhEdge[4 * width * height];
-            for (int i = 0; i < edges.Length; i++)
-                edges[i] = new FhEdge();
-            edgePockets = new FhEdge[256];
+            return Math.Min(a.Int, b.Int);
         }
 
-        private void FillArrays(int width, int height, byte[,] pixels, int k, ConnectingMethod connectingMethod)
+        private void MergeSegment(Segment a, Segment b, int weight)
         {
-            for (int j = 0; j < height; j++)
-                for (int i = 0; i < width; i++)
-                {
-                    int c = j * width + i;
-                    // initialize node
-                    nodes[i, j].Component = components[c];
-                    // initialize component
-                    components[c].Index = -1;
-                    components[c].Count = 1;
-                    components[c].MaxWeight = -1;
-                    components[c].First = components[c].Last = nodes[i, j];
-                    // initialize edge
-                    if (((i + 1) < width) && ((j - 1) >= 0) && connectingMethod == ConnectingMethod.Connecred_8)
-                        CreateEdge(4 * c, nodes[i, j], nodes[i + 1, j - 1], Math.Abs((int)pixels[i, j] - (int)pixels[i + 1, j - 1]));
-                    if ((i + 1) < width)
-                        CreateEdge(4 * c + 1, nodes[i, j], nodes[i + 1, j], Math.Abs((int)pixels[i, j] - (int)pixels[i + 1, j]));
-                    if (((i + 1) < width) && ((j + 1) < height) && connectingMethod == ConnectingMethod.Connecred_8)
-                        CreateEdge(4 * c + 2, nodes[i, j], nodes[i + 1, j + 1], Math.Abs((int)pixels[i, j] - (int)pixels[i + 1, j + 1]));
-                    if ((j + 1) < height)
-                        CreateEdge(4 * c + 3, nodes[i, j], nodes[i, j + 1], Math.Abs((int)pixels[i, j] - (int)pixels[i, j + 1]));
-                }
-        }
-
-        private void CreateEdge(int idx, FhNode v1, FhNode v2, int diff)
-        {
-            if ((diff >= 0) && (diff < 256))
-            {
-                edges[idx].V1 = v1;
-                edges[idx].V2 = v2;
-                edges[idx].Next = edgePockets[diff];
-                edgePockets[diff] = edges[idx];
-            }
-        }
-
-        private void DoAlgorithm(int k)
-        {
-            for (int idx = 0; idx < 256; idx++)
-            {
-                FhEdge actual = edgePockets[idx];
-                while (actual != null)
-                {
-                    if ((actual.V1.Component != actual.V2.Component) &&
-                        ((double)idx < Math.Min(actual.V1.Component.MaxWeight + k / actual.V1.Component.Count,
-                                                actual.V2.Component.MaxWeight + k / actual.V2.Component.Count)))
-                    {
-                        FhComponent c1, c2;
-                        if (actual.V1.Component.Count >= actual.V2.Component.Count)
-                        {
-                            c1 = actual.V1.Component;
-                            c2 = actual.V2.Component;
-                        }
-                        else
-                        {
-                            c1 = actual.V2.Component;
-                            c2 = actual.V1.Component;
-                        }
-                        AppendComponent(c1, c2, idx);
-                    }
-                    actual = actual.Next;
-                }
-            }
-        }
-
-        private void MargeSmall(int minSize)
-        {
-            for (int idx = 0; idx < 256; idx++)
-            {
-                FhEdge actual = edgePockets[idx];
-                while (actual != null)
-                {
-                    if ((actual.V1.Component != actual.V2.Component) &&
-                        (actual.V1.Component.Count < minSize || actual.V2.Component.Count < minSize))
-                    {
-                        FhComponent c1, c2;
-                        if (actual.V1.Component.Count >= actual.V2.Component.Count)
-                        {
-                            c1 = actual.V1.Component;
-                            c2 = actual.V2.Component;
-                        }
-                        else
-                        {
-                            c1 = actual.V2.Component;
-                            c2 = actual.V1.Component;
-                        }
-                        AppendComponent(c1, c2, idx);
-                    }
-                    actual = actual.Next;
-                }
-            }
-        }
-
-        private void AppendComponent(FhComponent c1, FhComponent c2, double weight)
-        {
-            FhNode nodeB = c2.First;
-            while (nodeB != null)
-            {
-                nodeB.Component = c1;
-                nodeB = nodeB.Next;
-            }
-            c1.Last.Next = c2.First;
-            c1.Last = c2.Last;
-            c1.Count += c2.Count;
-            if (weight > c1.MaxWeight) c1.MaxWeight = weight;
-        }
-
-        private int[,] ReindexSegments(int width, int height)
-        {
-            int[,] segments = new int[width, height];
-            int idx = 0;
-            for (int j = 0; j < height; j++)
-                for (int i = 0; i < width; i++)
-                {
-                    if (nodes[i, j].Component.Index < 0)
-                    {
-                        nodes[i, j].Component.Index = idx;
-                        idx++;
-                    }
-                    segments[i, j] = nodes[i, j].Component.Index;
-                }
-            return segments;
+            a.AddNodes(b.Nodes, weight);
+            b.Clear();
         }
 
         #endregion
@@ -163,18 +80,48 @@ namespace ImageSegmentationModel.Segmentation
 
         public int[,] BuildSegments(int width, int height, byte[,] pixels, int k, int minSize, ConnectingMethod connectingMethod)
         {
-            try
+            Graph graph = GetGraph(width, height, pixels, k, connectingMethod);
+
+            graph.Edges.Sort();
+            foreach (Edge edge in graph.Edges)
             {
-                CreateArrays(width, height);
-                FillArrays(width, height, pixels, k, connectingMethod);
-                DoAlgorithm(k);
-                MargeSmall(minSize);
-                return ReindexSegments(width, height);
+                try
+                {
+                    Segment a = edge.A.Segment;
+                    Segment b = edge.B.Segment;
+                    if (a.Id != b.Id)
+                    {
+                        if (edge.Weight < MInt(a, b))
+                            MergeSegment(a, b, edge.Weight);
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
-            catch (Exception)
+            foreach (Edge edge in graph.Edges)
             {
-                throw;
+                try
+                {
+                    Segment a = edge.A.Segment;
+                    Segment b = edge.B.Segment;
+                    if (a.Id != b.Id)
+                    {
+                        if (a.Nodes.Count < minSize || b.Nodes.Count < minSize)
+                            MergeSegment(a, b, edge.Weight);
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
+            int[,] segments = new int[width, height];
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                    segments[x, y] = graph.Nodes[x, y].Segment.Id;
+            return segments;
         }
 
         #endregion

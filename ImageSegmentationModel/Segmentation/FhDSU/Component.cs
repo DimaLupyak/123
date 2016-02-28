@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImageSegmentationModel.Segmentation
+namespace ImageSegmentationModel.Segmentation.FhDSU
 {
-    class FhComponent
+    class Component
     {
         public int Index, Count;
         public double MaxWeight;
-        public FhNode First, Last;
+        public Node First, Last;
     }
 }
