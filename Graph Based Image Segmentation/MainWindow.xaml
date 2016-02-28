@@ -43,7 +43,9 @@
                 <ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
                   SelectedItem="{Binding Path=Method}" MinWidth="80"/>
             </GroupBox>
-
+            <GroupBox Header="ExecutionTime">
+                <Label Content="{Binding ExecutionTime, Mode=TwoWay}"></Label>
+            </GroupBox>
         </StackPanel>
 
         <Image Grid.Row="1" Source="{Binding OriginImage.Image}" StretchDirection="DownOnly" />

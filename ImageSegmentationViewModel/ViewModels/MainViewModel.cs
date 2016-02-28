@@ -4,6 +4,7 @@ using ImageSegmentationModel.Segmentation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
 
@@ -22,6 +23,19 @@ namespace ImageSegmentation.ViewModel
             {
                 _k = value;
                 RaisePropertyChanged("K");
+            }
+        }
+        private long _executionTime = 0;
+        public long ExecutionTime
+        {
+            get
+            {
+                return _executionTime;
+            }
+            set
+            {
+                _executionTime = value;
+                RaisePropertyChanged("ExecutionTime");
             }
         }
         private float _sigma = 1;
@@ -115,9 +129,12 @@ namespace ImageSegmentation.ViewModel
                     {
                         GaussianFilter filter = new GaussianFilter();
                         filter.Filter(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, Sigma);
+                        var watch = Stopwatch.StartNew();
                         int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize);
+                        watch.Stop();
+                        ExecutionTime = watch.ElapsedMilliseconds;
                         
-                            SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments));
+                        SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments));
                     }
                 }
                 catch { }
