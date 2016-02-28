@@ -9,10 +9,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800">
     <Window.Resources>
-        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+        <ObjectDataProvider x:Key="segmentationMethods" MethodName="GetValues"
                             ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="model:SegmentationMethod"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="connectingMethods" MethodName="GetValues"
+                            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="model:ConnectingMethod"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </Window.Resources>
@@ -40,8 +46,12 @@
                 <TextBox Text ="{Binding MinSize, Mode=TwoWay}" MinWidth="80"/>
             </GroupBox>
             <GroupBox Header="Segmentation Method">
-                <ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
+                <ComboBox ItemsSource="{Binding Source={StaticResource segmentationMethods}}"
                   SelectedItem="{Binding Path=Method}" MinWidth="80"/>
+            </GroupBox>
+            <GroupBox Header="Segmentation Method">
+                <ComboBox ItemsSource="{Binding Source={StaticResource connectingMethods}}"
+                  SelectedItem="{Binding Path=Connection}" MinWidth="80"/>
             </GroupBox>
             <GroupBox Header="ExecutionTime">
                 <Label Content="{Binding ExecutionTime, Mode=TwoWay}"></Label>

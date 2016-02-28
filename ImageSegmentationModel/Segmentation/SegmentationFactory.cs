@@ -10,7 +10,10 @@ namespace ImageSegmentationModel.Segmentation
     {
         Original, WithoutSort
     }
-
+    public enum ConnectingMethod
+    {
+        Connecred_4, Connecred_8
+    }
     public class SegmentationFactory
     {
         private static SegmentationFactory _instance;

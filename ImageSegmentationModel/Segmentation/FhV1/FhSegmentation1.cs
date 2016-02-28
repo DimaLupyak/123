@@ -29,7 +29,7 @@ namespace ImageSegmentationModel.Segmentation
             return nodes;
         }
 
-        private List<Edge1> BuildEdges(int width, int height, byte[,] pixels, Node1[,] nodes)
+        private List<Edge1> BuildEdges(int width, int height, byte[,] pixels, Node1[,] nodes, ConnectingMethod connectingMethod)
         {
             List<Edge1> edges = new List<Edge1>();
             for (int y = 0; y < height; y++)
@@ -38,10 +38,10 @@ namespace ImageSegmentationModel.Segmentation
                     byte pixel1 = pixels[x, y];
                     if (x < (width - 1))
                     {
-                        if (y > 0)
+                        if (y > 0 && connectingMethod == ConnectingMethod.Connecred_8)
                             edges.Add(new Edge1(nodes[x, y], nodes[x + 1, y - 1], Math.Abs(pixel1 - pixels[x + 1, y - 1]))); // Up-Right
                         edges.Add(new Edge1(nodes[x, y], nodes[x + 1, y], Math.Abs(pixel1 - pixels[x + 1, y]))); // Right
-                        if (y < (height - 1))
+                        if (y < (height - 1) && connectingMethod == ConnectingMethod.Connecred_8)
                             edges.Add(new Edge1(nodes[x, y], nodes[x + 1, y + 1], Math.Abs(pixel1 - pixels[x + 1, y + 1]))); // Down-Right
                     }
                     if (y < (height - 1))
@@ -50,11 +50,11 @@ namespace ImageSegmentationModel.Segmentation
             return edges;
         }
 
-        private Graph1 GetGraph(int width, int height, byte[,] pixels, int k)
+        private Graph1 GetGraph(int width, int height, byte[,] pixels, int k, ConnectingMethod connectingMethod)
         {
             List<Segment1> segments = GetSegments(width * height, k);
             Node1[,] nodes = GetNode(width, height, segments);
-            List<Edge1> edges = BuildEdges(width, height, pixels, nodes);
+            List<Edge1> edges = BuildEdges(width, height, pixels, nodes, connectingMethod);
 
             return new Graph1(nodes, edges, segments);
         }
@@ -78,9 +78,9 @@ namespace ImageSegmentationModel.Segmentation
 
         #region IFhSegmentation members
 
-        public int[,] BuildSegments(int width, int height, byte[,] pixels, int k, int minSize)
+        public int[,] BuildSegments(int width, int height, byte[,] pixels, int k, int minSize, ConnectingMethod connectingMethod)
         {
-            Graph1 graph = GetGraph(width, height, pixels, k);
+            Graph1 graph = GetGraph(width, height, pixels, k, connectingMethod);
 
             graph.Edges.Sort();
             foreach (Edge1 edge in graph.Edges)

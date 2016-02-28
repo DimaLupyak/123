@@ -77,6 +77,21 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("Method");
             }
         }
+
+        private ConnectingMethod _connection = ConnectingMethod.Connecred_8;
+        public ConnectingMethod Connection
+        {
+            get
+            {
+                return _connection;
+            }
+            set
+            {
+                _connection = value;
+                RaisePropertyChanged("Connection");
+            }
+        }
+
         public MainViewModel()
         {
 
@@ -130,7 +145,7 @@ namespace ImageSegmentation.ViewModel
                         GaussianFilter filter = new GaussianFilter();
                         filter.Filter(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, Sigma);
                         var watch = Stopwatch.StartNew();
-                        int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize);
+                        int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize, Connection);
                         watch.Stop();
                         ExecutionTime = watch.ElapsedMilliseconds;
                         

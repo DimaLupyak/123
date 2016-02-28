@@ -9,7 +9,7 @@ namespace ImageSegmentationModel.Segmentation
     class FhComponent
     {
         public int Index, Count;
-        public double IntPtau;
+        public double MaxWeight;
         public FhNode First, Last;
     }
 }
