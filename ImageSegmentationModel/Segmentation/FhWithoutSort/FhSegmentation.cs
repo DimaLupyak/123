@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImageSegmentationModel.Segmentation.FhDSU
+namespace ImageSegmentationModel.Segmentation.FhWithoutSort
 {
     public class FhSegmentation : IFhSegmentation
     {
@@ -20,7 +20,10 @@ namespace ImageSegmentationModel.Segmentation.FhDSU
 
         private void CreateArrays(int width, int height, ConnectingMethod connectingMethod)
         {
-            int edgesPerNode = connectingMethod == ConnectingMethod.Connecred_4 ? 2 : 4;
+            int edgesPerNode = 0;
+            if (connectingMethod == ConnectingMethod.Connecred_4) edgesPerNode = 2;
+            else if(connectingMethod == ConnectingMethod.Connecred_8) edgesPerNode = 4;
+            else if (connectingMethod == ConnectingMethod.Connecred_16) edgesPerNode = 8;
             nodes = new Node[width, height];
             for (int j = 0; j < height; j++)
                 for (int i = 0; i < width; i++)
@@ -34,9 +37,13 @@ namespace ImageSegmentationModel.Segmentation.FhDSU
             edgePockets = new Edge[256];
         }
 
-        private void FillArrays(int width, int height, byte[,] pixels, int k, ConnectingMethod connectingMethod)
+        private void FillArrays(int width, int height, RGB[,] pixels, int k, ConnectingMethod connectingMethod, ColorDifference difType)
         {
-            int edgesPerNode = connectingMethod == ConnectingMethod.Connecred_4 ? 2 : 4;
+            int edgesPerNode = 0;
+            if (connectingMethod == ConnectingMethod.Connecred_4) edgesPerNode = 2;
+            else if (connectingMethod == ConnectingMethod.Connecred_8) edgesPerNode = 4;
+            else if (connectingMethod == ConnectingMethod.Connecred_16) edgesPerNode = 8;
+
             for (int j = 0; j < height; j++)
                 for (int i = 0; i < width; i++)
                 {
@@ -50,22 +57,38 @@ namespace ImageSegmentationModel.Segmentation.FhDSU
                     components[c].First = components[c].Last = nodes[i, j];
                     // initialize edge
                     if ((i + 1) < width)
-                        CreateEdge(edgesPerNode * c , nodes[i, j], nodes[i + 1, j], Math.Abs((int)pixels[i, j] - (int)pixels[i + 1, j]));
+                        CreateEdge(edgesPerNode * c, nodes[i, j], nodes[i + 1, j], ImageHelper.Difference(pixels, i, j, i + 1, j, difType));
 
                     if ((j + 1) < height)
-                        CreateEdge(edgesPerNode * c + 1, nodes[i, j], nodes[i, j + 1], Math.Abs((int)pixels[i, j] - (int)pixels[i, j + 1]));
+                        CreateEdge(edgesPerNode * c + 1, nodes[i, j], nodes[i, j + 1], ImageHelper.Difference(pixels, i, j, i, j + 1, difType));
 
-                    if (((i + 1) < width) && ((j - 1) >= 0) && connectingMethod == ConnectingMethod.Connecred_8)
-                        CreateEdge(edgesPerNode * c + 2, nodes[i, j], nodes[i + 1, j - 1], Math.Abs((int)pixels[i, j] - (int)pixels[i + 1, j - 1]));
-                   
-                    if (((i + 1) < width) && ((j + 1) < height) && connectingMethod == ConnectingMethod.Connecred_8)
-                        CreateEdge(edgesPerNode * c + 3, nodes[i, j], nodes[i + 1, j + 1], Math.Abs((int)pixels[i, j] - (int)pixels[i + 1, j + 1]));
-                   
+                    if (connectingMethod == ConnectingMethod.Connecred_8) {
+                        if ((i + 1 < width) && (j - 1>= 0))
+                            CreateEdge(edgesPerNode * c + 2, nodes[i, j], nodes[i + 1, j - 1], ImageHelper.Difference(pixels, i, j, i + 1, j - 1, difType));
+
+                        if (((i + 1) < width) && ((j + 1) < height))
+                            CreateEdge(edgesPerNode * c + 3, nodes[i, j], nodes[i + 1, j + 1], ImageHelper.Difference(pixels, i, j, i + 1, j + 1, difType));
+                    }
+                    if(connectingMethod == ConnectingMethod.Connecred_16)
+                    {
+                        if ((i + 2) < width)
+                            CreateEdge(edgesPerNode * c+4, nodes[i, j], nodes[i + 2, j], ImageHelper.Difference(pixels, i, j, i + 2, j, difType));
+
+                        if ((j + 2) < height)
+                            CreateEdge(edgesPerNode * c + 5, nodes[i, j], nodes[i, j + 2], ImageHelper.Difference(pixels, i, j, i, j + 2, difType));
+
+                        if ((i + 2 < width) && (j - 2 >= 0))
+                            CreateEdge(edgesPerNode * c + 6, nodes[i, j], nodes[i + 2, j - 2], ImageHelper.Difference(pixels, i, j, i + 2, j - 2, difType));
+
+                        if (((i + 2) < width) && ((j + 2) < height))
+                            CreateEdge(edgesPerNode * c + 7, nodes[i, j], nodes[i + 2, j + 2], ImageHelper.Difference(pixels, i, j, i + 2, j + 2, difType));
+                    }
                 }
         }
 
         private void CreateEdge(int idx, Node v1, Node v2, int diff)
         {
+            if(diff>255) diff = 255;
             if ((diff >= 0) && (diff < 256))
             {
                 edges[idx].V1 = v1;
@@ -83,7 +106,7 @@ namespace ImageSegmentationModel.Segmentation.FhDSU
                 while (actual != null)
                 {
                     if ((actual.V1.Component != actual.V2.Component) &&
-                        ((double)idx < Math.Min(actual.V1.Component.MaxWeight  + k / actual.V1.Component.Count,
+                        (idx <= Math.Min(actual.V1.Component.MaxWeight + k / actual.V1.Component.Count,
                                                 actual.V2.Component.MaxWeight + k / actual.V2.Component.Count)))
                     {
                         Component c1, c2;
@@ -167,13 +190,13 @@ namespace ImageSegmentationModel.Segmentation.FhDSU
 
         #region IFhSegmentation members
 
-        public int[,] BuildSegments(int width, int height, byte[,] pixels, int k, int minSize, ConnectingMethod connectingMethod)
+        public int[,] BuildSegments(int width, int height, RGB[,] pixels, int k, int minSize, ConnectingMethod connectingMethod, ColorDifference difType)
         {
             try
             {
                 CreateArrays(width, height, connectingMethod);
-                FillArrays(width, height, pixels, k, connectingMethod);
-                DoAlgorithm(k);
+                FillArrays(width, height, pixels, k, connectingMethod, difType);
+                DoAlgorithm(k );
                 MargeSmall(minSize);
                 return ReindexSegments(width, height);
             }

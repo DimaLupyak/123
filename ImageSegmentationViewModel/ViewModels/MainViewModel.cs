@@ -12,7 +12,7 @@ namespace ImageSegmentation.ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private int _k = 1000;
+        private int _k = 100;
         public int K
         {
             get
@@ -51,7 +51,7 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("Sigma");
             }
         }
-        private int _minSize = 1;
+        private int _minSize = 10;
         public int MinSize
         {
             get
@@ -64,7 +64,7 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("MinSize");
             }
         }
-        private SegmentationMethod _method = SegmentationMethod.WithoutSort;
+        private SegmentationMethod _method = SegmentationMethod.FhDSU;
         public SegmentationMethod Method
         {
             get
@@ -89,6 +89,20 @@ namespace ImageSegmentation.ViewModel
             {
                 _connection = value;
                 RaisePropertyChanged("Connection");
+            }
+        }
+
+        private ColorDifference _difType = ColorDifference.RGB_std_deviation;
+        public ColorDifference DifType
+        {
+            get
+            {
+                return _difType;
+            }
+            set
+            {
+                _difType = value;
+                RaisePropertyChanged("DifType");
             }
         }
 
@@ -139,13 +153,13 @@ namespace ImageSegmentation.ViewModel
                 try
                 {
                     IFhSegmentation segmentation = SegmentationFactory.Instance.GetFhSegmentation(Method);
-                    byte[,] pixels = ImageHelper.GetPixels(OriginImage.Bitmap);
+                    RGB[,] pixels = ImageHelper.GetPixels(OriginImage.Bitmap);
                     if (pixels != null)
                     {
                         GaussianFilter filter = new GaussianFilter();
                         filter.Filter(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, Sigma);
                         var watch = Stopwatch.StartNew();
-                        int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize, Connection);
+                        int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize, Connection, DifType);
                         watch.Stop();
                         ExecutionTime = watch.ElapsedMilliseconds;
                         
@@ -172,7 +186,7 @@ namespace ImageSegmentation.ViewModel
                 try
                 {
                     GaussianFilter filter = new GaussianFilter();
-                    byte[,] pixels = ImageHelper.GetPixels(OriginImage.Bitmap);
+                    RGB[,] pixels = ImageHelper.GetPixels(OriginImage.Bitmap);
                     if (pixels != null)
                     {
                         filter.Filter(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, Sigma);

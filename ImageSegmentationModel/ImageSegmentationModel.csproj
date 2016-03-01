@@ -44,21 +44,29 @@
   <ItemGroup>
     <Compile Include="Filter\GaussianFilter.cs" />
     <Compile Include="Filter\Kernel.cs" />
-    <Compile Include="ImageHelper.cs" />
+    <Compile Include="Helpers\ColorModels.cs" />
+    <Compile Include="Helpers\Enums.cs" />
+    <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Segmentation\FhWithoutSort\Component.cs" />
+    <Compile Include="Segmentation\FhWithoutSort\Edge.cs" />
+    <Compile Include="Segmentation\FhWithoutSort\FhSegmentation.cs" />
+    <Compile Include="Segmentation\FhWithoutSort\Node.cs" />
     <Compile Include="Segmentation\Fh\Edge.cs" />
     <Compile Include="Segmentation\Fh\FhSegmentation.cs" />
     <Compile Include="Segmentation\Fh\Graph.cs" />
     <Compile Include="Segmentation\Fh\Node.cs" />
     <Compile Include="Segmentation\Fh\Segment.cs" />
-    <Compile Include="Segmentation\FhDSU\Component.cs" />
-    <Compile Include="Segmentation\FhDSU\Edge.cs" />
-    <Compile Include="Segmentation\FhDSU\Node.cs" />
-    <Compile Include="Segmentation\FhDSU\FhSegmentation.cs" />
+    <Compile Include="Segmentation\FhCreditWithoutSort\Segment.cs" />
+    <Compile Include="Segmentation\FhCreditWithoutSort\Edge.cs" />
+    <Compile Include="Segmentation\FhCreditWithoutSort\Node.cs" />
+    <Compile Include="Segmentation\FhCreditWithoutSort\FhSegmentation.cs" />
     <Compile Include="Segmentation\IFhSegmentation.cs" />
     <Compile Include="Segmentation\SegmentationFactory.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Segmentation\FhDSD\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

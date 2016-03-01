@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImageSegmentationModel.Segmentation.FhDSU
+namespace ImageSegmentationModel.Segmentation.FhCreditWithoutSort
 {
     class Node
     {
-        public Component Component;
+        public Segment Segment;
         public Node Next;
     }
 }

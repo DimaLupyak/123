@@ -9,21 +9,60 @@ using System.Threading.Tasks;
 
 namespace ImageSegmentationModel
 {
+
+  
+
     public static class ImageHelper
     {
-        private static byte[,] GetIntensities(byte[] pixels, int width, int height, int stride, int bytesPerPixel)
+        public static int Difference(RGB[,] pixels, int x1, int y1, int x2, int y2, ColorDifference type)
         {
-            byte[,] intensities = new byte[width, height];
+            switch (type)
+            {
+                case ColorDifference.RGB_std_deviation:
+                    return (int)(2*Math.Sqrt((
+                Math.Pow(pixels[x1, y1].Red - pixels[x2, y2].Red, 2)
+                + Math.Pow(pixels[x1, y1].Green - pixels[x2, y2].Green, 2)
+                + Math.Pow(pixels[x1, y1].Blue - pixels[x2, y2].Blue, 2)) / 3
+                ));
+                case ColorDifference.CIE76:
+                    CIELab Lab1 = ColorModelConverter.RGBtoLab(pixels[x1, y1].Red, pixels[x1, y1].Green, pixels[x1, y1].Blue);
+                    CIELab Lab2 = ColorModelConverter.RGBtoLab(pixels[x2, y2].Red, pixels[x2, y2].Green, pixels[x2, y2].Blue);
+
+                    return (int)(4*Math.Sqrt((
+                Math.Pow(Lab1.L - Lab2.L, 2)
+                + Math.Pow(Lab1.A - Lab2.A, 2)
+                + Math.Pow(Lab1.B - Lab2.B, 2))
+                ));
+                case ColorDifference.dRed:
+                    return Math.Abs(pixels[x1, y1].Red - pixels[x2, y2].Red);
+                case ColorDifference.dGreen:
+                    return Math.Abs(pixels[x1, y1].Green - pixels[x2, y2].Green);
+                case ColorDifference.dBlue:
+                    return Math.Abs(pixels[x1, y1].Blue - pixels[x2, y2].Blue);
+                case ColorDifference.Grey:
+                    return Math.Abs(ColorModelConverter.RGBtoGray(pixels[x1, y1]) - ColorModelConverter.RGBtoGray(pixels[x2, y2]));
+                default:
+                    return 0;
+            }
+            
+            //return Math.Abs(pixels[x1, y1].i - pixels[x2, y2].i);
+        }
+
+        private static RGB[,] GetPixelsMatrix(byte[] pixels, int width, int height, int stride, int bytesPerPixel)
+        {
+            RGB[,] matrix = new RGB[width, height];
             for (int j = 0; j < height; j++)
                 for (int i = 0; i < width; i++)
                 {
                     int idx = j * stride + i * bytesPerPixel;
-                    int sum = 0;
-                    for (int b = 0; b < bytesPerPixel; b++)
-                        sum += pixels[idx + b];
-                    intensities[i, j] = (byte)(sum / bytesPerPixel);
+                    if(bytesPerPixel >= 3)
+                    {
+                        matrix[i, j].Blue = pixels[idx + 0];
+                        matrix[i, j].Green = pixels[idx + 1];
+                        matrix[i, j].Red = pixels[idx + 2];
+                    }
                 }
-            return intensities;
+            return matrix;
         }
 
         private static int[,] GetSegments(byte[] pixels, int width, int height, int stride, int bytesPerPixel)
@@ -62,7 +101,7 @@ namespace ImageSegmentationModel
                 }
         }
 
-        private static void FillFilterPixels(byte[,] filter, byte[] pixels, int width, int height, int stride)
+        private static void FillFilterPixels(RGB[,] filter, byte[] pixels, int width, int height, int stride)
         {
             Random random = new Random();
             Dictionary<int, byte[]> colors = new Dictionary<int, byte[]>();
@@ -70,54 +109,34 @@ namespace ImageSegmentationModel
                 for (int i = 0; i < width; i++)
                 {
                     int idx = j * stride + i * 3;
-                    pixels[idx] = filter[i, j];
-                    pixels[idx + 1] = filter[i, j];
-                    pixels[idx + 2] = filter[i, j];
+                    pixels[idx] = filter[i, j].Blue;
+                    pixels[idx + 1] = filter[i, j].Green;
+                    pixels[idx + 2] = filter[i, j].Red;
                 }
         }
 
-        public static byte[,] GetPixels(Bitmap bitmap)
+        public static RGB[,] GetPixels(Bitmap bitmap)
         {
+            BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+            int bytes = bitmapData.Stride * bitmap.Height;
+            byte[] pixels = new byte[bytes];
+            Marshal.Copy(bitmapData.Scan0, pixels, 0, bytes);
+            RGB[,] pixelMatrix = null;
             if (bitmap.PixelFormat == PixelFormat.Format8bppIndexed)
             {
-                BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
-                int bytes = bitmapData.Stride * bitmap.Height;
-                byte[] pixels = new byte[bytes];
-                Marshal.Copy(bitmapData.Scan0, pixels, 0, bytes);
-
-                byte[,] intensities = GetIntensities(pixels, bitmapData.Width, bitmapData.Height, bitmapData.Stride, 1);
-
-                bitmap.UnlockBits(bitmapData);
-
-                return intensities;
+                pixelMatrix = GetPixelsMatrix(pixels, bitmapData.Width, bitmapData.Height, bitmapData.Stride, 1);                
             }
             else if (bitmap.PixelFormat == PixelFormat.Format24bppRgb)
             {
-                BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
-                int bytes = bitmapData.Stride * bitmap.Height;
-                byte[] pixels = new byte[bytes];
-                Marshal.Copy(bitmapData.Scan0, pixels, 0, bytes);
-
-                byte[,] intensities = GetIntensities(pixels, bitmapData.Width, bitmapData.Height, bitmapData.Stride, 3);
-
-                bitmap.UnlockBits(bitmapData);
-
-                return intensities;
+                pixelMatrix = GetPixelsMatrix(pixels, bitmapData.Width, bitmapData.Height, bitmapData.Stride, 3);
             }
             else if ((bitmap.PixelFormat == PixelFormat.Format32bppRgb) || (bitmap.PixelFormat == PixelFormat.Format32bppArgb))
             {
-                BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
-                int bytes = bitmapData.Stride * bitmap.Height;
-                byte[] pixels = new byte[bytes];
-                Marshal.Copy(bitmapData.Scan0, pixels, 0, bytes);
-
-                byte[,] intensities = GetIntensities(pixels, bitmapData.Width, bitmapData.Height, bitmapData.Stride, 4);
-
-                bitmap.UnlockBits(bitmapData);
-
-                return intensities;
+                pixelMatrix = GetPixelsMatrix(pixels, bitmapData.Width, bitmapData.Height, bitmapData.Stride, 4);
             }
-            return null;
+            bitmap.UnlockBits(bitmapData);
+
+            return pixelMatrix;
         }
 
         public static int[,] GetSegments(Bitmap bitmap)
@@ -154,7 +173,6 @@ namespace ImageSegmentationModel
                 int bytes = bitmapData.Stride * bitmap.Height;
                 byte[] pixels = new byte[bytes];
                 Marshal.Copy(bitmapData.Scan0, pixels, 0, bytes);
-
                 int[,] segments = GetSegments(pixels, bitmapData.Width, bitmapData.Height, bitmapData.Stride, 4);
 
                 bitmap.UnlockBits(bitmapData);
@@ -181,7 +199,7 @@ namespace ImageSegmentationModel
             return bitmap;
         }
 
-        public static Bitmap GetFilterBitmap(byte[,] filter)
+        public static Bitmap GetFilterBitmap(RGB[,] filter)
         {
             Bitmap bitmap = new Bitmap(filter.GetLength(0), filter.GetLength(1), PixelFormat.Format24bppRgb);
 

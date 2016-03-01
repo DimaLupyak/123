@@ -10,12 +10,32 @@ namespace ImageSegmentationModel.Filter
     {
         #region convolution methods
 
-        private byte Convolution(int i, int j, int width, int height, byte[,] pixels, Kernel kernel)
+        private enum Parametr
+        {
+            R, G, B
+        }
+
+        private byte Convolution(int i, int j, int width, int height, RGB[,] pixels, Kernel kernel, Parametr paramtr)
         {
             double sum = 0;
             for (int k = -kernel.R; k <= kernel.R; k++)
                 for (int l = -kernel.R; l <= kernel.R; l++)
-                    sum += kernel.Matrix[k + kernel.R, l + kernel.R] * pixels[GetPixelIndex(i + k, width), GetPixelIndex(j + l, height)];
+                {
+                    int parametrValue = 0;
+                    switch (paramtr)
+                    {
+                        case Parametr.R:
+                            parametrValue = pixels[GetPixelIndex(i + k, width), GetPixelIndex(j + l, height)].Red;
+                            break;
+                        case Parametr.G:
+                            parametrValue = pixels[GetPixelIndex(i + k, width), GetPixelIndex(j + l, height)].Green;
+                            break;
+                        case Parametr.B:
+                            parametrValue = pixels[GetPixelIndex(i + k, width), GetPixelIndex(j + l, height)].Blue;
+                            break;
+                    }
+                    sum += kernel.Matrix[k + kernel.R, l + kernel.R] * parametrValue;
+                }
             return (byte)Math.Round(sum);
         }
 
@@ -32,13 +52,17 @@ namespace ImageSegmentationModel.Filter
 
         #region public method
 
-        public void Filter(int width, int height, byte[,] pixels, double sigma)
+        public void Filter(int width, int height, RGB[,] pixels, double sigma)
         {
             Kernel kernel = new Kernel(sigma);
-            byte[,] filter = new byte[width, height];
+            RGB[,] filter = new RGB[width, height];
             for (int j = 0; j < height; j++)
                 for (int i = 0; i < width; i++)
-                    filter[i, j] = Convolution(i, j, width, height, pixels, kernel);
+                {
+                    filter[i, j].Red = Convolution(i, j, width, height, pixels, kernel, Parametr.R);
+                    filter[i, j].Green = Convolution(i, j, width, height, pixels, kernel, Parametr.G);
+                    filter[i, j].Blue = Convolution(i, j, width, height, pixels, kernel, Parametr.B);
+                }
             for (int j = 0; j < height; j++)
                 for (int i = 0; i < width; i++)
                     pixels[i, j] = filter[i, j];

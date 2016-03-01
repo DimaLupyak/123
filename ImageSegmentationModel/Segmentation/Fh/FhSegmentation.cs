@@ -29,32 +29,31 @@ namespace ImageSegmentationModel.Segmentation.Fh
             return nodes;
         }
 
-        private List<Edge> BuildEdges(int width, int height, byte[,] pixels, Node[,] nodes, ConnectingMethod connectingMethod)
+        private List<Edge> BuildEdges(int width, int height, RGB[,] pixels, Node[,] nodes, ConnectingMethod connectingMethod, ColorDifference difType)
         {
             List<Edge> edges = new List<Edge>();
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)
                 {
-                    byte pixel1 = pixels[x, y];
                     if (x < (width - 1))
                     {
                         if (y > 0 && connectingMethod == ConnectingMethod.Connecred_8)
-                            edges.Add(new Edge(nodes[x, y], nodes[x + 1, y - 1], Math.Abs(pixel1 - pixels[x + 1, y - 1]))); // Up-Right
-                        edges.Add(new Edge(nodes[x, y], nodes[x + 1, y], Math.Abs(pixel1 - pixels[x + 1, y]))); // Right
+                            edges.Add(new Edge(nodes[x, y], nodes[x + 1, y - 1], ImageHelper.Difference(pixels, x, y, x + 1, y - 1, difType))); // Up-Right
+                        edges.Add(new Edge(nodes[x, y], nodes[x + 1, y], ImageHelper.Difference(pixels, x, y, x + 1, y, difType))); // Right
                         if (y < (height - 1) && connectingMethod == ConnectingMethod.Connecred_8)
-                            edges.Add(new Edge(nodes[x, y], nodes[x + 1, y + 1], Math.Abs(pixel1 - pixels[x + 1, y + 1]))); // Down-Right
+                            edges.Add(new Edge(nodes[x, y], nodes[x + 1, y + 1], ImageHelper.Difference(pixels, x, y, x + 1, y + 1, difType))); // Down-Right
                     }
                     if (y < (height - 1))
-                        edges.Add(new Edge(nodes[x, y], nodes[x, y + 1], Math.Abs(pixel1 - pixels[x, y + 1]))); // Down
+                        edges.Add(new Edge(nodes[x, y], nodes[x, y + 1], ImageHelper.Difference(pixels, x, y, x, y + 1, difType))); // Down
                 }
             return edges;
         }
 
-        private Graph GetGraph(int width, int height, byte[,] pixels, int k, ConnectingMethod connectingMethod)
+        private Graph GetGraph(int width, int height, RGB[,] pixels, int k, ConnectingMethod connectingMethod, ColorDifference difType)
         {
             List<Segment> segments = GetSegments(width * height, k);
             Node[,] nodes = GetNode(width, height, segments);
-            List<Edge> edges = BuildEdges(width, height, pixels, nodes, connectingMethod);
+            List<Edge> edges = BuildEdges(width, height, pixels, nodes, connectingMethod, difType);
 
             return new Graph(nodes, edges, segments);
         }
@@ -78,9 +77,9 @@ namespace ImageSegmentationModel.Segmentation.Fh
 
         #region IFhSegmentation members
 
-        public int[,] BuildSegments(int width, int height, byte[,] pixels, int k, int minSize, ConnectingMethod connectingMethod)
+        public int[,] BuildSegments(int width, int height, RGB[,] pixels, int k, int minSize, ConnectingMethod connectingMethod, ColorDifference difType)
         {
-            Graph graph = GetGraph(width, height, pixels, k, connectingMethod);
+            Graph graph = GetGraph(width, height, pixels, k, connectingMethod, difType);
 
             graph.Edges.Sort();
             foreach (Edge edge in graph.Edges)
@@ -91,8 +90,10 @@ namespace ImageSegmentationModel.Segmentation.Fh
                     Segment b = edge.B.Segment;
                     if (a.Id != b.Id)
                     {
-                        if (edge.Weight < MInt(a, b))
-                            MergeSegment(a, b, edge.Weight);
+                        if (edge.Weight <= MInt(a, b))
+                            if (a.Nodes.Count >= b.Nodes.Count)
+                                MergeSegment(a, b, edge.Weight);
+                            else MergeSegment(b, a, edge.Weight);
                     }
                 }
                 catch (Exception)
@@ -109,7 +110,9 @@ namespace ImageSegmentationModel.Segmentation.Fh
                     if (a.Id != b.Id)
                     {
                         if (a.Nodes.Count < minSize || b.Nodes.Count < minSize)
-                            MergeSegment(a, b, edge.Weight);
+                            if (a.Nodes.Count >= b.Nodes.Count)
+                                MergeSegment(a, b, edge.Weight);
+                            else MergeSegment(b, a, edge.Weight);
                     }
                 }
                 catch (Exception)

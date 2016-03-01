@@ -4,16 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace ImageSegmentationModel.Segmentation
-{
-
-    public enum SegmentationMethod
-    {
-        Original, WithoutSort
-    }
-    public enum ConnectingMethod
-    {
-        Connecred_4, Connecred_8
-    }
+{    
     public class SegmentationFactory
     {
         private static SegmentationFactory _instance;
@@ -28,10 +19,12 @@ namespace ImageSegmentationModel.Segmentation
         {
             switch (method)
             {
-                case SegmentationMethod.Original:
+                case SegmentationMethod.FhOriginal:
                     return new Fh.FhSegmentation();
-                case SegmentationMethod.WithoutSort:
-                    return new FhDSU.FhSegmentation();
+                case SegmentationMethod.FhWithoutSort:
+                    return new FhWithoutSort.FhSegmentation();
+                case SegmentationMethod.FhCreditWithoutSort:
+                    return new FhCreditWithoutSort.FhSegmentation();
                 default:
                     return new Fh.FhSegmentation();
             }

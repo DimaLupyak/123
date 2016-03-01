@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        xmlns:model="clr-namespace:ImageSegmentationModel.Segmentation;assembly=ImageSegmentationModel"
+        xmlns:model="clr-namespace:ImageSegmentationModel;assembly=ImageSegmentationModel"
         xmlns:local="clr-namespace:ImageSegmentation.View"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800">
@@ -19,6 +19,12 @@
                             ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="model:ConnectingMethod"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="difType" MethodName="GetValues"
+                            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="model:ColorDifference"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </Window.Resources>
@@ -52,6 +58,10 @@
             <GroupBox Header="Segmentation Method">
                 <ComboBox ItemsSource="{Binding Source={StaticResource connectingMethods}}"
                   SelectedItem="{Binding Path=Connection}" MinWidth="80"/>
+            </GroupBox>
+            <GroupBox Header="Segmentation Method">
+                <ComboBox ItemsSource="{Binding Source={StaticResource difType}}"
+                  SelectedItem="{Binding Path=DifType}" MinWidth="80"/>
             </GroupBox>
             <GroupBox Header="ExecutionTime">
                 <Label Content="{Binding ExecutionTime, Mode=TwoWay}"></Label>
