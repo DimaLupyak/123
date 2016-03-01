@@ -25,6 +25,8 @@ namespace ImageSegmentationModel.Segmentation
                     return new FhWithoutSort.FhSegmentation();
                 case SegmentationMethod.FhCreditWithoutSort:
                     return new FhCreditWithoutSort.FhSegmentation();
+                case SegmentationMethod.FhDSD:
+                    return new FhDSD.FhSegmentation();
                 default:
                     return new Fh.FhSegmentation();
             }

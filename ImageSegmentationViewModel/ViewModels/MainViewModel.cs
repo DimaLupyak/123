@@ -64,7 +64,7 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("MinSize");
             }
         }
-        private SegmentationMethod _method = SegmentationMethod.FhDSU;
+        private SegmentationMethod _method = SegmentationMethod.FhCreditWithoutSort;
         public SegmentationMethod Method
         {
             get

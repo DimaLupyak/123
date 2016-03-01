@@ -48,6 +48,9 @@
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Segmentation\FhDSD\Edge.cs" />
+    <Compile Include="Segmentation\FhDSD\FhSegmentation.cs" />
+    <Compile Include="Segmentation\FhDSD\Node.cs" />
     <Compile Include="Segmentation\FhWithoutSort\Component.cs" />
     <Compile Include="Segmentation\FhWithoutSort\Edge.cs" />
     <Compile Include="Segmentation\FhWithoutSort\FhSegmentation.cs" />
@@ -64,9 +67,7 @@
     <Compile Include="Segmentation\IFhSegmentation.cs" />
     <Compile Include="Segmentation\SegmentationFactory.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Segmentation\FhDSD\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

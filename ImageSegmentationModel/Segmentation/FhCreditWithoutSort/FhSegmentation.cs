@@ -54,7 +54,7 @@ namespace ImageSegmentationModel.Segmentation.FhCreditWithoutSort
                     // initialize component
                     segments[c].Id = -1;
                     segments[c].Count = 1;
-                    segments[c].Credit = k;
+                    segments[c].Credit = 0;
                     segments[c].First = segments[c].Last = nodes[i, j];
                     // initialize edge
                     if ((i + 1) < width)
@@ -93,7 +93,7 @@ namespace ImageSegmentationModel.Segmentation.FhCreditWithoutSort
                 while (actual != null)
                 {
                     if ((actual.V1.Segment != actual.V2.Segment) &&
-                        (idx <= Math.Min(actual.V1.Segment.Credit , actual.V2.Segment.Credit)))
+                        (idx + actual.V1.Segment.Credit + actual.V2.Segment.Credit <= k))
                     {
                         Segment c1, c2;
                         if (actual.V1.Segment.Count >= actual.V2.Segment.Count)
@@ -152,7 +152,7 @@ namespace ImageSegmentationModel.Segmentation.FhCreditWithoutSort
             c1.Last.Next = c2.First;
             c1.Last = c2.Last;
             c1.Count += c2.Count;
-            c1.Credit -= weight;
+            c1.Credit += weight;
         }
 
         private int[,] ReindexSegments(int width, int height)
