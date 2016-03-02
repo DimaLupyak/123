@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace ImageSegmentationModel.Segmentation.FhDSD
 {
@@ -61,10 +63,22 @@ namespace ImageSegmentationModel.Segmentation.FhDSD
         {
             try
             {
+                var watch = Stopwatch.StartNew();
                 nodes = GetNodes(width, height);
-                edges = BuildEdges(width, height, pixels, connectingMethod, difType);
-                edges.Sort();
+                watch.Stop();
+                MessageBox.Show("" + watch.ElapsedMilliseconds, "GetNodes", MessageBoxButtons.OK);
 
+                watch = Stopwatch.StartNew();
+                edges = BuildEdges(width, height, pixels, connectingMethod, difType);
+                watch.Stop();
+                MessageBox.Show("" + watch.ElapsedMilliseconds, "BuildEdges", MessageBoxButtons.OK);
+
+                watch = Stopwatch.StartNew();
+                edges.Sort();
+                watch.Stop();
+                MessageBox.Show("" + watch.ElapsedMilliseconds, "Sort", MessageBoxButtons.OK);
+
+                watch = Stopwatch.StartNew();
                 foreach (Edge edge in edges)
                 {
                         int sumSegmentWeight = edge.A.Find().SegmentWeight + edge.B.Find().SegmentWeight;
@@ -73,7 +87,9 @@ namespace ImageSegmentationModel.Segmentation.FhDSD
                             edge.A.Union(edge.B, edge.Weight);
                         }
                 }
-
+                watch.Stop();
+                MessageBox.Show("" + watch.ElapsedMilliseconds, "Marge", MessageBoxButtons.OK);
+                watch = Stopwatch.StartNew();
                 foreach (Edge edge in edges)
                 {
                     if (edge.A.Find().Size < minSize || edge.B.Find().Size < minSize)
@@ -81,7 +97,8 @@ namespace ImageSegmentationModel.Segmentation.FhDSD
                         edge.A.Union(edge.B, edge.Weight);
                     }
                 }
-
+                watch.Stop();
+                MessageBox.Show("" + watch.ElapsedMilliseconds, "ninSize", MessageBoxButtons.OK);
                 int[,] segments = new int[width, height];
                 for (int y = 0; y < height; y++)
                     for (int x = 0; x < width; x++)

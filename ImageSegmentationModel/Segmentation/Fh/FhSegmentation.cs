@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace ImageSegmentationModel.Segmentation.Fh
 {
@@ -79,9 +81,16 @@ namespace ImageSegmentationModel.Segmentation.Fh
 
         public int[,] BuildSegments(int width, int height, RGB[,] pixels, int k, int minSize, ConnectingMethod connectingMethod, ColorDifference difType)
         {
+            var watch = Stopwatch.StartNew();
+            
             Graph graph = GetGraph(width, height, pixels, k, connectingMethod, difType);
-
+            watch.Stop();
+            MessageBox.Show("" + watch.ElapsedMilliseconds, "Create+fill", MessageBoxButtons.OK);
+            watch = Stopwatch.StartNew();
             graph.Edges.Sort();
+            watch.Stop();
+            MessageBox.Show("" + watch.ElapsedMilliseconds, "Sort", MessageBoxButtons.OK);
+            watch = Stopwatch.StartNew();
             foreach (Edge edge in graph.Edges)
             {
                 try
@@ -101,6 +110,9 @@ namespace ImageSegmentationModel.Segmentation.Fh
                     throw;
                 }
             }
+            watch.Stop();
+            MessageBox.Show("" + watch.ElapsedMilliseconds, "Marge", MessageBoxButtons.OK);
+            watch = Stopwatch.StartNew();
             foreach (Edge edge in graph.Edges)
             {
                 try
@@ -120,6 +132,8 @@ namespace ImageSegmentationModel.Segmentation.Fh
                     throw;
                 }
             }
+            watch.Stop();
+            MessageBox.Show("" + watch.ElapsedMilliseconds, "minSize", MessageBoxButtons.OK);
             int[,] segments = new int[width, height];
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)

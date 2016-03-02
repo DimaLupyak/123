@@ -7,7 +7,7 @@ namespace ImageSegmentationModel.Segmentation.FhCreditWithoutSort
 {
     class Edge
     {
-        public Node V1, V2;
+        public Node A, B;
         public Edge Next;
     }
 }

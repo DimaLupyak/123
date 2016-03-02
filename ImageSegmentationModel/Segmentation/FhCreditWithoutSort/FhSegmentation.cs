@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace ImageSegmentationModel.Segmentation.FhCreditWithoutSort
 {
@@ -78,8 +80,8 @@ namespace ImageSegmentationModel.Segmentation.FhCreditWithoutSort
             if(diff>255) diff = 255;
             if ((diff >= 0) && (diff < 256))
             {
-                edges[idx].V1 = v1;
-                edges[idx].V2 = v2;
+                edges[idx].A = v1;
+                edges[idx].B = v2;
                 edges[idx].Next = edgePockets[diff];
                 edgePockets[diff] = edges[idx];
             }
@@ -92,19 +94,19 @@ namespace ImageSegmentationModel.Segmentation.FhCreditWithoutSort
                 Edge actual = edgePockets[idx];
                 while (actual != null)
                 {
-                    if ((actual.V1.Segment != actual.V2.Segment) &&
-                        (idx + actual.V1.Segment.Credit + actual.V2.Segment.Credit <= k))
+                    if ((actual.A.Segment != actual.B.Segment) &&
+                        (idx + actual.A.Segment.Credit + actual.B.Segment.Credit <= k))
                     {
                         Segment c1, c2;
-                        if (actual.V1.Segment.Count >= actual.V2.Segment.Count)
+                        if (actual.A.Segment.Count >= actual.B.Segment.Count)
                         {
-                            c1 = actual.V1.Segment;
-                            c2 = actual.V2.Segment;
+                            c1 = actual.A.Segment;
+                            c2 = actual.B.Segment;
                         }
                         else
                         {
-                            c1 = actual.V2.Segment;
-                            c2 = actual.V1.Segment;
+                            c1 = actual.B.Segment;
+                            c2 = actual.A.Segment;
                         }
                         AppendComponent(c1, c2, idx);
                     }
@@ -120,19 +122,19 @@ namespace ImageSegmentationModel.Segmentation.FhCreditWithoutSort
                 Edge actual = edgePockets[idx];
                 while (actual != null)
                 {
-                    if ((actual.V1.Segment != actual.V2.Segment) &&
-                        (actual.V1.Segment.Count < minSize || actual.V2.Segment.Count < minSize))
+                    if ((actual.A.Segment != actual.B.Segment) &&
+                        (actual.A.Segment.Count < minSize || actual.B.Segment.Count < minSize))
                     {
                         Segment c1, c2;
-                        if (actual.V1.Segment.Count >= actual.V2.Segment.Count)
+                        if (actual.A.Segment.Count >= actual.B.Segment.Count)
                         {
-                            c1 = actual.V1.Segment;
-                            c2 = actual.V2.Segment;
+                            c1 = actual.A.Segment;
+                            c2 = actual.B.Segment;
                         }
                         else
                         {
-                            c1 = actual.V2.Segment;
-                            c2 = actual.V1.Segment;
+                            c1 = actual.B.Segment;
+                            c2 = actual.A.Segment;
                         }
                         AppendComponent(c1, c2, idx);
                     }
@@ -180,10 +182,22 @@ namespace ImageSegmentationModel.Segmentation.FhCreditWithoutSort
         {
             try
             {
+                var watch = Stopwatch.StartNew();               
                 CreateArrays(width, height, connectingMethod);
+                watch.Stop();
+                MessageBox.Show(""+watch.ElapsedMilliseconds, "CreateArrays", MessageBoxButtons.OK);
+                watch = Stopwatch.StartNew();
                 FillArrays(width, height, pixels, k, connectingMethod, difType);
+                watch.Stop();
+                MessageBox.Show("" + watch.ElapsedMilliseconds, "FillArrays", MessageBoxButtons.OK);
+                watch = Stopwatch.StartNew();
                 DoAlgorithm(k );
+                watch.Stop();
+                MessageBox.Show("" + watch.ElapsedMilliseconds, "DoAlgorithm", MessageBoxButtons.OK);
+                watch = Stopwatch.StartNew();
                 MargeSmall(minSize);
+                watch.Stop();
+                MessageBox.Show("" + watch.ElapsedMilliseconds, "MargeSmall", MessageBoxButtons.OK);
                 return ReindexSegments(width, height);
             }
             catch (Exception)

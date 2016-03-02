@@ -8,7 +8,7 @@ namespace ImageSegmentationModel
 {
     public enum SegmentationMethod
     {
-        FhOriginal, FhWithoutSort, FhCreditWithoutSort, FhDSD
+        FhOriginal, FhWithoutSort, FhCreditWithoutSort, FhDSD, FhDSDWithoutSort
     }
     public enum ConnectingMethod
     {
