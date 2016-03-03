@@ -10,43 +10,11 @@ using System.Threading.Tasks;
 namespace ImageSegmentationModel
 {
 
-  
+
 
     public static class ImageHelper
     {
-        public static int Difference(RGB[,] pixels, int x1, int y1, int x2, int y2, ColorDifference type)
-        {
-            switch (type)
-            {
-                case ColorDifference.RGB_std_deviation:
-                    return (int)(2*Math.Sqrt((
-                Math.Pow(pixels[x1, y1].Red - pixels[x2, y2].Red, 2)
-                + Math.Pow(pixels[x1, y1].Green - pixels[x2, y2].Green, 2)
-                + Math.Pow(pixels[x1, y1].Blue - pixels[x2, y2].Blue, 2)) / 3
-                ));
-                case ColorDifference.CIE76:
-                    CIELab Lab1 = ColorModelConverter.RGBtoLab(pixels[x1, y1].Red, pixels[x1, y1].Green, pixels[x1, y1].Blue);
-                    CIELab Lab2 = ColorModelConverter.RGBtoLab(pixels[x2, y2].Red, pixels[x2, y2].Green, pixels[x2, y2].Blue);
-
-                    return (int)(4*Math.Sqrt((
-                Math.Pow(Lab1.L - Lab2.L, 2)
-                + Math.Pow(Lab1.A - Lab2.A, 2)
-                + Math.Pow(Lab1.B - Lab2.B, 2))
-                ));
-                case ColorDifference.dRed:
-                    return Math.Abs(pixels[x1, y1].Red - pixels[x2, y2].Red);
-                case ColorDifference.dGreen:
-                    return Math.Abs(pixels[x1, y1].Green - pixels[x2, y2].Green);
-                case ColorDifference.dBlue:
-                    return Math.Abs(pixels[x1, y1].Blue - pixels[x2, y2].Blue);
-                case ColorDifference.Grey:
-                    return Math.Abs(ColorModelConverter.RGBtoGray(pixels[x1, y1]) - ColorModelConverter.RGBtoGray(pixels[x2, y2]));
-                default:
-                    return 0;
-            }
-            
-            //return Math.Abs(pixels[x1, y1].i - pixels[x2, y2].i);
-        }
+        
 
         private static RGB[,] GetPixelsMatrix(byte[] pixels, int width, int height, int stride, int bytesPerPixel)
         {
@@ -55,7 +23,7 @@ namespace ImageSegmentationModel
                 for (int i = 0; i < width; i++)
                 {
                     int idx = j * stride + i * bytesPerPixel;
-                    if(bytesPerPixel >= 3)
+                    if (bytesPerPixel >= 3)
                     {
                         matrix[i, j].Blue = pixels[idx + 0];
                         matrix[i, j].Green = pixels[idx + 1];
@@ -124,7 +92,7 @@ namespace ImageSegmentationModel
             RGB[,] pixelMatrix = null;
             if (bitmap.PixelFormat == PixelFormat.Format8bppIndexed)
             {
-                pixelMatrix = GetPixelsMatrix(pixels, bitmapData.Width, bitmapData.Height, bitmapData.Stride, 1);                
+                pixelMatrix = GetPixelsMatrix(pixels, bitmapData.Width, bitmapData.Height, bitmapData.Stride, 1);
             }
             else if (bitmap.PixelFormat == PixelFormat.Format24bppRgb)
             {

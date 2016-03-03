@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImageSegmentationModel.Segmentation.Fh
+namespace ImageSegmentationModel.Segmentation.Classic
 {
     class Node
     {

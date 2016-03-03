@@ -8,15 +8,15 @@ namespace ImageSegmentationModel
 {
     public enum SegmentationMethod
     {
-        FhOriginal, FhWithoutSort, FhCreditWithoutSort, FhDSD, FhDSDWithoutSort
+        OriginalFh, OriginalCreditFh, DSDFh, DSDCreditFh, NoSortFh, NoSortCreditFh, NoSortDSDFh, NoSortCreditDSDFh
     }
     public enum ConnectingMethod
     {
-        Connecred_4, Connecred_8, Connecred_16
+        Connecred_4, Connecred_8
     }
 
     public enum ColorDifference
     {
-        RGB_std_deviation, CIE76, dRed, dBlue, dGreen, Grey
+        RGB_std_deviation, CIE76, CIE94, CIE2000, dRed, dBlue, dGreen, Grey
     }
 }

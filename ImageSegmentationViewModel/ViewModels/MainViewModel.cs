@@ -3,6 +3,7 @@ using ImageSegmentationModel.Filter;
 using ImageSegmentationModel.Segmentation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -12,6 +13,20 @@ namespace ImageSegmentation.ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        private PerfomanceInfo perfomanceInfo;
+        public PerfomanceInfo PerfomanceInfo
+        {
+            get
+            {
+                return perfomanceInfo;
+            }
+            set
+            {
+                perfomanceInfo  = value;
+                RaisePropertyChanged("PerfomanceInfo");
+            }
+        }
+
         private int _k = 100;
         public int K
         {
@@ -64,7 +79,7 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("MinSize");
             }
         }
-        private SegmentationMethod _method = SegmentationMethod.FhCreditWithoutSort;
+        private SegmentationMethod _method = SegmentationMethod.OriginalCreditFh;
         public SegmentationMethod Method
         {
             get
@@ -108,7 +123,6 @@ namespace ImageSegmentation.ViewModel
 
         public MainViewModel()
         {
-
         }
 
         private RelayCommand _openImageCommand;
@@ -159,7 +173,7 @@ namespace ImageSegmentation.ViewModel
                         GaussianFilter filter = new GaussianFilter();
                         filter.Filter(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, Sigma);
                         var watch = Stopwatch.StartNew();
-                        int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize, Connection, DifType);
+                        int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize, Connection, DifType, ref perfomanceInfo);
                         watch.Stop();
                         ExecutionTime = watch.ElapsedMilliseconds;
                         

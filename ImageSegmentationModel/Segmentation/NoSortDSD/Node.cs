@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImageSegmentationModel.Segmentation.FhDSDWithoutSort
+namespace ImageSegmentationModel.Segmentation.NoSortDSD
 {
     /// <summary>
     /// A UnionFindNode represents a set of nodes that it is a member of.
@@ -29,7 +29,8 @@ namespace ImageSegmentationModel.Segmentation.FhDSDWithoutSort
             }
         }
 
-        public int SegmentWeight { get; set; }
+        public double SegmentWeight { get; set; }
+        public double MaxWeight { get; set; }
         /// <summary>
         /// Creates a new disjoint node, representative of a set containing only the new node.
         /// </summary>
@@ -38,6 +39,7 @@ namespace ImageSegmentationModel.Segmentation.FhDSDWithoutSort
             parent = this;
             Id = id;
             SegmentWeight = 0;
+            MaxWeight = 0;
             Size = 1;
         }
         /// <summary>
@@ -64,29 +66,31 @@ namespace ImageSegmentationModel.Segmentation.FhDSDWithoutSort
         /// Returns whether or not the nodes were disjoint before the union operation (i.e. if the operation had an effect).
         /// </summary>
         /// <returns>True when the union had an effect, false when the nodes were already in the same set.</returns>
-        public bool Union(Node other, int weight)
+        public bool Union(Node other, double weight)
         {
             if (other == null) throw new ArgumentNullException("other");
             var root1 = this.Find();
             var root2 = other.Find();
             if (ReferenceEquals(root1, root2)) return false;
-
             if (root1.rank < root2.rank)
             {
                 root1.parent = root2;
                 root2.SegmentWeight += root1.SegmentWeight + weight;
+                root2.MaxWeight = weight;
                 root2.Size += root1.Size;
             }
             else if (root1.rank > root2.rank)
             {
                 root2.parent = root1;
                 root1.SegmentWeight += root2.SegmentWeight + weight;
+                root1.MaxWeight = weight;
                 root1.Size += root2.Size;
             }
             else
             {
                 root2.parent = root1;
                 root1.SegmentWeight += root2.SegmentWeight + weight;
+                root1.MaxWeight = weight;
                 root1.Size += root2.Size;
                 root1.rank++;
             }

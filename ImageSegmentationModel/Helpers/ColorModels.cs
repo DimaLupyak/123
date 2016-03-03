@@ -287,11 +287,11 @@ namespace ImageSegmentationModel
 
             // convert to a sRGB form
             double r = (rLinear > 0.04045) ? Math.Pow((rLinear + 0.055) / (
-                1 + 0.055), 2.2) : (rLinear / 12.92);
+                1.055), 2.4) : (rLinear / 12.92);
             double g = (gLinear > 0.04045) ? Math.Pow((gLinear + 0.055) / (
-                1 + 0.055), 2.2) : (gLinear / 12.92);
+                1.055), 2.4) : (gLinear / 12.92);
             double b = (bLinear > 0.04045) ? Math.Pow((bLinear + 0.055) / (
-                1 + 0.055), 2.2) : (bLinear / 12.92);
+                1.055), 2.4) : (bLinear / 12.92);
 
             // converts
             return new CIEXYZ(

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImageSegmentationModel.Segmentation.FhDSDWithoutSort
+namespace ImageSegmentationModel.Segmentation.NoSortDSD
 {
     class Edge 
     {

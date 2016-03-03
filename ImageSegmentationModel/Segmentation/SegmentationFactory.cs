@@ -7,32 +7,44 @@ namespace ImageSegmentationModel.Segmentation
 {    
     public class SegmentationFactory
     {
-        private static SegmentationFactory _instance;
+        private static SegmentationFactory instance;
         public static SegmentationFactory Instance
         {
-            get { return _instance ?? (_instance = new SegmentationFactory()); }
-        }
-
-       
+            get { return instance ?? (instance = new SegmentationFactory()); }
+        }       
 
         public IFhSegmentation GetFhSegmentation(SegmentationMethod method)
         {
             switch (method)
             {
-                case SegmentationMethod.FhOriginal:
-                    return new Fh.FhSegmentation();
-                case SegmentationMethod.FhWithoutSort:
-                    return new FhWithoutSort.FhSegmentation();
-                case SegmentationMethod.FhCreditWithoutSort:
-                    return new FhCreditWithoutSort.FhSegmentation();
-                case SegmentationMethod.FhDSD:
-                    return new FhDSD.FhSegmentation();
-                case SegmentationMethod.FhDSDWithoutSort:
-                    return new FhDSDWithoutSort.FhSegmentation();
+                case SegmentationMethod.OriginalFh:
+                    return new Classic.Fh.FhSegmentation();
+
+                case SegmentationMethod.OriginalCreditFh:
+                    return new Classic.FhCredit.FhSegmentation();
+
+                case SegmentationMethod.DSDFh:
+                    return new DSD.Fh.FhSegmentation();
+
+                case SegmentationMethod.DSDCreditFh:
+                    return new DSD.FhCredit.FhSegmentation();
+
+                case SegmentationMethod.NoSortFh:
+                    return new NoSort.Fh.FhSegmentation();
+
+                case SegmentationMethod.NoSortCreditFh:
+                    return new NoSort.FhCredit.FhSegmentation();
+
+                case SegmentationMethod.NoSortDSDFh:
+                    return new NoSortDSD.Fh.FhSegmentation();
+
+                case SegmentationMethod.NoSortCreditDSDFh:
+                    return new NoSortDSD.FhCredit.FhSegmentation();
+
                 default:
-                    return new Fh.FhSegmentation();
+                    return new Classic.Fh.FhSegmentation();
             }
-            
+
         }
     }
 }

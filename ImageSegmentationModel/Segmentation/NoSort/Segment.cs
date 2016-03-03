@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImageSegmentationModel.Segmentation.FhWithoutSort
+namespace ImageSegmentationModel.Segmentation.NoSort
 {
-    class Component
+    class Segment
     {
-        public int Index, Count;
+        public int Id, Count;
+        public double SegmentWeight;
         public double MaxWeight;
         public Node First, Last;
     }
