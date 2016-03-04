@@ -40,19 +40,6 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("K");
             }
         }
-        private long _executionTime = 0;
-        public long ExecutionTime
-        {
-            get
-            {
-                return _executionTime;
-            }
-            set
-            {
-                _executionTime = value;
-                RaisePropertyChanged("ExecutionTime");
-            }
-        }
         private float _sigma = 0.8f;
         public float Sigma
         {
@@ -155,7 +142,11 @@ namespace ImageSegmentation.ViewModel
             {
                 SegmentedImage = null;
                 OriginImage = new ImageViewModel(new Bitmap(dlg.FileName));
+
+                ClearPerfomanceInfo();
+                RaisePropertyChanged("PerfomanceInfo");
             }
+           
         }
 
 
@@ -172,10 +163,7 @@ namespace ImageSegmentation.ViewModel
                     {
                         GaussianFilter filter = new GaussianFilter();
                         filter.Filter(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, Sigma);
-                        var watch = Stopwatch.StartNew();
-                        int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize, Connection, DifType, ref perfomanceInfo);
-                        watch.Stop();
-                        ExecutionTime = watch.ElapsedMilliseconds;                        
+                        int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize, Connection, DifType, ref perfomanceInfo);                       
                         SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments));
                         RaisePropertyChanged("PerfomanceInfo");
                     }
@@ -189,13 +177,22 @@ namespace ImageSegmentation.ViewModel
         }
 
        
+        protected void ClearPerfomanceInfo()
+        {
+            perfomanceInfo.AlgorithmPerfomance = 0;
+            perfomanceInfo.BuildingPerfomance = 0;
+            perfomanceInfo.SmallSegmentMargingPerfomance = 0;
+            perfomanceInfo.SortingPerfomance = 0;
+        }
 
-  
 
         public void GaussianImage()
         {
             Task task = Task.Factory.StartNew(() =>
             {
+
+                ClearPerfomanceInfo();
+                RaisePropertyChanged("PerfomanceInfo");
                 CanNewExecute = false;
                 try
                 {

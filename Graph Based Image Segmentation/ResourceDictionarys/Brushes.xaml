@@ -1,0 +1,42 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="ForegroundBrush" Color="#FFDEDEDE"/>
+    <SolidColorBrush x:Key="WindowBackgraundBrush" Color="#FFFFFF"/>
+    <LinearGradientBrush x:Key="WindowBorderBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FF661A1A"/>
+        <GradientStop Color="#FF222222" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="CaptionBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FF661A1A"/>
+        <GradientStop Color="#FF222222" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="SellectedCaptionBrush" Color="#FF222222"/>
+    <SolidColorBrush x:Key="ToolBarBackgraundBrush" Color="#FF39404A"/>
+    <LinearGradientBrush x:Key="ToolBarButtonBackgraundBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FFB62727"/>
+        <GradientStop Color="#FF222222" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="SellectedToolBarButtonBackgraundBrush" EndPoint="0.5,0.8" StartPoint="0.5,0.2">
+        <GradientStop Color="#FFB62727"/>
+        <GradientStop Color="#FF222222" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="ScrollBarBrush" Color="#FF222222"/>
+    <SolidColorBrush x:Key="SellectedScrollBarBrush" Color="#FF740D1F"/>
+    <SolidColorBrush x:Key="DragingScrollBarBrush" Color="#FFA80925"/>
+    <SolidColorBrush x:Key="CloseButtonBackgraundBrush" Color="#FF222222"/>
+    <SolidColorBrush x:Key="SellectedCloseButtonBackgraundBrush" Color="#FF222222"/>
+    <SolidColorBrush x:Key="CaptionButtonBackgraundBrush" Color="#FF222222"/>
+    <SolidColorBrush x:Key="SellectedCaptionButtonBackgraundBrush" Color="#FF222222"/>
+    <SolidColorBrush x:Key="ExpanderButtonBackgraundBrush" Color="#FFF74060"/>
+    <SolidColorBrush x:Key="SellectedExpanderButtonBackgraundBrush" Color="#FFFF2149"/>
+    <SolidColorBrush x:Key="ExpanderButtonBorderBrush" Color="#FFDEDEDE"/>
+    <SolidColorBrush x:Key="SellectedExpanderButtonBorderBrush" Color="#FFDEDEDE"/>
+    <!--<SolidColorBrush x:Key="ExpanderCaptionBrush" Color="#999999"/>-->
+    <LinearGradientBrush x:Key="ExpanderCaptionBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FF661A1A"/>
+        <GradientStop Color="#FF222222" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="SellectedExpanderCaptionBrush" Color="#FF9B7A10"/>
+    
+</ResourceDictionary>

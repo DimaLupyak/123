@@ -6,6 +6,11 @@
              xmlns:model="clr-namespace:ImageSegmentationModel.Segmentation;assembly=ImageSegmentationModel"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" >
     <Application.Resources>
-        
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ResourceDictionarys/Brushes.xaml"/>
+                <ResourceDictionary Source="ResourceDictionarys/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
