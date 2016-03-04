@@ -66,44 +66,72 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("MinSize");
             }
         }
-        private SegmentationMethod _method = SegmentationMethod.OriginalCreditFh;
-        public SegmentationMethod Method
+        private DataStructure dataStructure = DataStructure.SimpleGhaph;
+        public DataStructure DataStructure
         {
             get
             {
-                return _method;
+                return dataStructure;
             }
             set
             {
-                _method = value;
-                RaisePropertyChanged("Method");
+                dataStructure = value;
+                RaisePropertyChanged("DataStructure");
             }
         }
 
-        private ConnectingMethod _connection = ConnectingMethod.Connecred_8;
+        private SortModification sortModification = SortModification.WithSorting;
+        public SortModification SortModification
+        {
+            get
+            {
+                return sortModification;
+            }
+            set
+            {
+                sortModification = value;
+                RaisePropertyChanged("SortModification");
+            }
+        }
+
+        private MargeHeuristic margeHeuristic = MargeHeuristic.K;
+        public MargeHeuristic MargeHeuristic
+        {
+            get
+            {
+                return margeHeuristic;
+            }
+            set
+            {
+                margeHeuristic = value;
+                RaisePropertyChanged("MargeHeuristic");
+            }
+        }
+
+        private ConnectingMethod connection = ConnectingMethod.Connecred_8;
         public ConnectingMethod Connection
         {
             get
             {
-                return _connection;
+                return connection;
             }
             set
             {
-                _connection = value;
+                connection = value;
                 RaisePropertyChanged("Connection");
             }
         }
 
-        private ColorDifference _difType = ColorDifference.RGB_std_deviation;
+        private ColorDifference difType = ColorDifference.RGB_std_deviation;
         public ColorDifference DifType
         {
             get
             {
-                return _difType;
+                return difType;
             }
             set
             {
-                _difType = value;
+                difType = value;
                 RaisePropertyChanged("DifType");
             }
         }
@@ -157,7 +185,7 @@ namespace ImageSegmentation.ViewModel
                 CanNewExecute = false;
                 try
                 {
-                    IFhSegmentation segmentation = SegmentationFactory.Instance.GetFhSegmentation(Method);
+                    IFhSegmentation segmentation = SegmentationFactory.Instance.GetFhSegmentation(DataStructure, SortModification, MargeHeuristic);
                     RGB[,] pixels = ImageHelper.GetPixels(OriginImage.Bitmap);
                     if (pixels != null)
                     {

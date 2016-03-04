@@ -10,7 +10,7 @@
         Title="Image Segmentation" Height="491.73" Width="800"
         WindowStyle="None" AllowsTransparency="True" 
         Style="{DynamicResource ThemedWindowStyle}">
-
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -23,37 +23,40 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <WrapPanel Grid.ColumnSpan="2" >
-            <Button Content="Відкрити зображення" Command="{Binding OpenImageCommand}" IsEnabled="{Binding CanNewExecute}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,5,5,10" />
-            <Button Content="Сегментувати" Command="{Binding SegmentImageCommand}" IsEnabled="{Binding CanNewExecute}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,5,5,10" />
-            <Button Content="Застосувати фільтр розмиття по Гаусу" Command="{Binding GaussianImageCommand}" IsEnabled="{Binding CanNewExecute}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,5,5,10" />
-        </WrapPanel>
-
-        <Expander  Grid.Row="1" 
-                  Header="Вхідні параметри" 
-                  IsExpanded="True" Style="{DynamicResource ExpanderStyle}">
-            <WrapPanel>
-                <GroupBox Header="k" ToolTip="Параметр k відповідає за масштаб об'єктів спостереження">
+            <Button Content="Відкрити зображення" Command="{Binding OpenImageCommand}" IsEnabled="{Binding CanNewExecute}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="10,10,5,10" />
+            <Button Content="Сегментувати" Command="{Binding SegmentImageCommand}" IsEnabled="{Binding CanNewExecute}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,10,5,10" />
+            <Button Content="Застосувати фільтр розмиття по Гаусу" Command="{Binding GaussianImageCommand}" IsEnabled="{Binding CanNewExecute}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,10,10,10" />
+            <WrapPanel >
+                <GroupBox Header="{Binding MargeHeuristic, Converter={StaticResource ParametrNameConverter}}" ToolTip="Параметр алгоритму сегментації">
                     <TextBox Text ="{Binding K, Mode=TwoWay}" MinWidth="80"/>
                 </GroupBox>
-                <GroupBox Header="Sigma" ToolTip="діаметр зглажування Гаусса">
+                <GroupBox Header="sigma" ToolTip="діаметр зглажування Гаусса">
                     <TextBox Text ="{Binding Sigma, Mode=TwoWay}" MinWidth="80"/>
                 </GroupBox>
-                <GroupBox Header="Min Size" ToolTip="Мінімальний розмір сегменту">
+                <GroupBox Header="min" ToolTip="Мінімальний розмір сегменту">
                     <TextBox Text ="{Binding MinSize, Mode=TwoWay}" MinWidth="80"/>
                 </GroupBox>
             </WrapPanel>
-        </Expander>
-        <Expander  Grid.Row="1" Grid.Column="1" 
+        </WrapPanel>
+
+
+        <Expander  Grid.Row="1" Grid.ColumnSpan="2"
                   Header="Модифікації алгоритму" 
                   IsExpanded="True" Style="{DynamicResource ExpanderStyle}">
             <WrapPanel>
-                <GroupBox Header="Segmentation Method">
-                    <ComboBox Name="segmentationMethods" SelectedItem="{Binding Path=Method}" MinWidth="80"/>
+                <GroupBox Header="Структура" ToolTip="Структура даних, що використовується при побудові графу">
+                    <ComboBox Name="dataStructure" SelectedItem="{Binding Path=DataStructure}" MinWidth="80"/>
                 </GroupBox>
-                <GroupBox Header="Connecting Methods">
+                <GroupBox Header="Сортування" ToolTip="Модифікація сортування ребер">
+                    <ComboBox Name="sortModification" SelectedItem="{Binding Path=SortModification}" MinWidth="80"/>
+                </GroupBox>
+                <GroupBox Header="Євристика" ToolTip="Метод визначення чи належать вузли графу одному сегменту">
+                    <ComboBox Name="margeHeuristic" SelectedItem="{Binding Path=MargeHeuristic}" MinWidth="80"/>
+                </GroupBox>
+                <GroupBox Header="Сполучення пікселів" ToolTip="Визначає спосіб об'єднання пікселів при побудові графу">
                     <ComboBox Name="connectingMethods" SelectedItem="{Binding Path=Connection}" MinWidth="80"/>
                 </GroupBox>
-                <GroupBox Header="Dif Type">
+                <GroupBox Header="Метрика" ToolTip="Спосів визначення відмінності між пікселями">
                     <ComboBox Name="difType" SelectedItem="{Binding Path=DifType}" MinWidth="80"/>
                 </GroupBox>
             </WrapPanel>

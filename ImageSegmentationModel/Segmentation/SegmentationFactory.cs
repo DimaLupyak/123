@@ -13,38 +13,59 @@ namespace ImageSegmentationModel.Segmentation
             get { return instance ?? (instance = new SegmentationFactory()); }
         }       
 
-        public IFhSegmentation GetFhSegmentation(SegmentationMethod method)
+        public IFhSegmentation GetFhSegmentation(DataStructure dataStructure, SortModification sortModification, MargeHeuristic margeHeuristic)
         {
-            switch (method)
+            if(dataStructure == DataStructure.SimpleGhaph)
             {
-                case SegmentationMethod.OriginalFh:
-                    return new Classic.Fh.FhSegmentation();
-
-                case SegmentationMethod.OriginalCreditFh:
-                    return new Classic.FhCredit.FhSegmentation();
-
-                case SegmentationMethod.DSDFh:
-                    return new DSD.Fh.FhSegmentation();
-
-                case SegmentationMethod.DSDCreditFh:
-                    return new DSD.FhCredit.FhSegmentation();
-
-                case SegmentationMethod.NoSortFh:
-                    return new NoSort.Fh.FhSegmentation();
-
-                case SegmentationMethod.NoSortCreditFh:
-                    return new NoSort.FhCredit.FhSegmentation();
-
-                case SegmentationMethod.NoSortDSDFh:
-                    return new NoSortDSD.Fh.FhSegmentation();
-
-                case SegmentationMethod.NoSortCreditDSDFh:
-                    return new NoSortDSD.FhCredit.FhSegmentation();
-
-                default:
-                    return new Classic.Fh.FhSegmentation();
+                if(sortModification == SortModification.WithSorting)
+                {
+                    if (margeHeuristic == MargeHeuristic.K)
+                    {
+                        return new Classic.Fh.FhSegmentation();
+                    }
+                    else if (margeHeuristic == MargeHeuristic.Credit)
+                    {
+                        return new Classic.FhCredit.FhSegmentation();
+                    }
+                }
+                else if (sortModification == SortModification.NoSorting)
+                {
+                    if (margeHeuristic == MargeHeuristic.K)
+                    {
+                        return new NoSort.Fh.FhSegmentation();
+                    }
+                    else if (margeHeuristic == MargeHeuristic.Credit)
+                    {
+                        return new NoSort.FhCredit.FhSegmentation();
+                    }
+                }
             }
-
+            else if (dataStructure == DataStructure.DisjointSetDataGhaph)
+            {
+                if (sortModification == SortModification.WithSorting)
+                {
+                    if (margeHeuristic == MargeHeuristic.K)
+                    {
+                        return new DSD.Fh.FhSegmentation();
+                    }
+                    else if (margeHeuristic == MargeHeuristic.Credit)
+                    {
+                        return new DSD.FhCredit.FhSegmentation();
+                    }
+                }
+                else if (sortModification == SortModification.NoSorting)
+                {
+                    if (margeHeuristic == MargeHeuristic.K)
+                    {
+                        return new NoSortDSD.Fh.FhSegmentation();
+                    }
+                    else if (margeHeuristic == MargeHeuristic.Credit)
+                    {
+                        return new NoSortDSD.FhCredit.FhSegmentation();
+                    }
+                }
+            }
+            return new Classic.Fh.FhSegmentation();
         }
     }
 }

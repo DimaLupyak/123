@@ -5,10 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ImageSegmentationModel
-{
-    public enum SegmentationMethod
+{    
+    public enum DataStructure
     {
-        OriginalFh, OriginalCreditFh, DSDFh, DSDCreditFh, NoSortFh, NoSortCreditFh, NoSortDSDFh, NoSortCreditDSDFh
+        SimpleGhaph, DisjointSetDataGhaph
+    }
+    public enum SortModification
+    {
+        NoSorting, WithSorting
+    }
+
+    public enum MargeHeuristic
+    {
+        K, Credit
     }
     public enum ConnectingMethod
     {

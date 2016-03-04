@@ -11,7 +11,7 @@ using System.Windows.Interop;
 
 namespace ImageSegmentation.View
 {
-    public class ThemedWindow : System.Windows.Window
+    public class ThemedWindow : Window
     {
         private Point cursorOffset;
         private double restoreTop;

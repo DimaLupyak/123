@@ -12,7 +12,9 @@ namespace ImageSegmentation.View
         {
             InitializeComponent();
             this.DataContext = new MainViewModel();
-            segmentationMethods.ItemsSource = Enum.GetValues(typeof(SegmentationMethod));
+            dataStructure.ItemsSource = Enum.GetValues(typeof(DataStructure));
+            sortModification.ItemsSource = Enum.GetValues(typeof(SortModification));
+            margeHeuristic.ItemsSource = Enum.GetValues(typeof(MargeHeuristic));
             connectingMethods.ItemsSource = Enum.GetValues(typeof(ConnectingMethod));
             difType.ItemsSource = Enum.GetValues(typeof(ColorDifference));
         }
