@@ -175,9 +175,9 @@ namespace ImageSegmentation.ViewModel
                         var watch = Stopwatch.StartNew();
                         int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize, Connection, DifType, ref perfomanceInfo);
                         watch.Stop();
-                        ExecutionTime = watch.ElapsedMilliseconds;
-                        
+                        ExecutionTime = watch.ElapsedMilliseconds;                        
                         SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments));
+                        RaisePropertyChanged("PerfomanceInfo");
                     }
                 }
                 catch { }

@@ -8,17 +8,15 @@ namespace ImageSegmentationModel
 {
     public struct PerfomanceInfo
     {
-        public int StructureCreatingPerfomance { get; set; }
-        public int StructureFillingPerfomance { get; set; }
-        public int SortingPerfomance { get; set; }
-        public int AlgorithmPerfomance { get; set; }
-        public int SmallSegmentMargingPerfomance { get; set; }
-        public int SummaryPerfomance
+        public long BuildingPerfomance { get; set; }
+        public long SortingPerfomance { get; set; }
+        public long AlgorithmPerfomance { get; set; }
+        public long SmallSegmentMargingPerfomance { get; set; }
+        public long SummaryPerfomance
         {
             get
             {
-                return StructureCreatingPerfomance
-                     + StructureFillingPerfomance
+                return BuildingPerfomance
                      + SortingPerfomance
                      + AlgorithmPerfomance
                      + SmallSegmentMargingPerfomance;
