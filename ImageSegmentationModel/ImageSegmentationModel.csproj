@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnumDescriptionTypeConverter.cs" />
     <Compile Include="Filter\GaussianFilter.cs" />
     <Compile Include="Filter\Kernel.cs" />
     <Compile Include="Helpers\ColorModels.cs" />

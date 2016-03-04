@@ -1,31 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ImageSegmentationModel
-{    
+{
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum DataStructure
     {
-        SimpleGhaph, DisjointSetDataGhaph
+        [Description("Simple Graph")]
+        SimpleGhaph,
+        [Description("Disjoint sets")]
+        DisjointSetDataGhaph
     }
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum SortModification
     {
-        NoSorting, WithSorting
+        [Description("Без сортування")]
+        NoSorting,
+        [Description("З сортуванням")]
+        WithSorting
     }
-
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum MargeHeuristic
     {
-        K, Credit
+        [Description("Параметр k")]
+        K,
+        [Description("Параметр credit")]
+        Credit
     }
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum ConnectingMethod
     {
-        Connecred_4, Connecred_8
+        [Description("4-connected")]
+        Connected_4,
+        [Description("8-connected")]
+        Connected_8
     }
-
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum ColorDifference
     {
-        RGB_std_deviation, CIE76, CIE94, CIE2000, dRed, dBlue, dGreen, Grey
+        [Description("RGB середнє квадратичне")]
+        RGB_std_deviation,
+        [Description("CIE76")]
+        CIE76,
+        [Description("CIE94")]
+        CIE94,
+        [Description("CIE2000")]
+        CIE2000,
+        [Description("Різниця складових Red")]
+        dRed,
+        [Description("Різниця складових Blue")]
+        dBlue,
+        [Description("Різниця складових Green")]
+        dGreen,
+        [Description("Різниця відтінків сірого")]
+        Grey
     }
 }

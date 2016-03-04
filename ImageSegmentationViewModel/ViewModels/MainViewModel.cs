@@ -108,7 +108,7 @@ namespace ImageSegmentation.ViewModel
             }
         }
 
-        private ConnectingMethod connection = ConnectingMethod.Connecred_8;
+        private ConnectingMethod connection = ConnectingMethod.Connected_8;
         public ConnectingMethod Connection
         {
             get

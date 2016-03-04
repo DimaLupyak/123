@@ -30,7 +30,7 @@ namespace ImageSegmentationModel.Segmentation.DSD
                     if (j < (height - 1))
                         edges.Add(new Edge(nodes[i, j], nodes[i, j + 1], PixelComparator.Difference(pixels[i, j], pixels[i, j + 1], difType))); // Down
 
-                    if (connectingMethod == ConnectingMethod.Connecred_8)
+                    if (connectingMethod == ConnectingMethod.Connected_8)
                     {
                         if (j > 0 && i < (width - 1))
                             edges.Add(new Edge(nodes[i, j], nodes[i + 1, j - 1], PixelComparator.Difference(pixels[i, j], pixels[i + 1, j - 1], difType))); // Up-Right

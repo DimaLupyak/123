@@ -16,8 +16,8 @@ namespace ImageSegmentationModel.Segmentation.NoSort
         protected override void BuildGraph(int width, int height, RGB[,] pixels, ConnectingMethod connectingMethod, ColorDifference difType)
         {
             int edgesPerNode = 0;
-            if (connectingMethod == ConnectingMethod.Connecred_4) edgesPerNode = 2;
-            else if (connectingMethod == ConnectingMethod.Connecred_8) edgesPerNode = 4;
+            if (connectingMethod == ConnectingMethod.Connected_4) edgesPerNode = 2;
+            else if (connectingMethod == ConnectingMethod.Connected_8) edgesPerNode = 4;
 
             nodes = new Node[width, height];
             for (int j = 0; j < height; j++)
@@ -49,7 +49,7 @@ namespace ImageSegmentationModel.Segmentation.NoSort
                     if ((j + 1) < height)
                         CreateEdge(edgesPerNode * c + 1, nodes[i, j], nodes[i, j + 1], (int)PixelComparator.Difference(pixels[i, j], pixels[i, j + 1], difType));
 
-                    if (connectingMethod == ConnectingMethod.Connecred_8)
+                    if (connectingMethod == ConnectingMethod.Connected_8)
                     {
                         if ((i + 1 < width) && (j - 1 >= 0))
                             CreateEdge(edgesPerNode * c + 2, nodes[i, j], nodes[i + 1, j - 1], (int)PixelComparator.Difference(pixels[i, j], pixels[i + 1, j - 1], difType));
