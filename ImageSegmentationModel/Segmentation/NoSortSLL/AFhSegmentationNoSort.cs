@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImageSegmentationModel.Segmentation.NoSort
+namespace ImageSegmentationModel.Segmentation.NoSortSLL
 {
-    abstract class AFhSegmentationNoSort : AFhSegmentation
+    abstract class AFhSegmentationNoSortSLL : AFhSegmentation
     {
         protected Node[,] nodes;
-        protected List<Segment> segments;
+        protected Segment[] segments;
         protected Edge[] edges;
         protected Edge[] edgePockets;
 
@@ -19,20 +19,13 @@ namespace ImageSegmentationModel.Segmentation.NoSort
             if (connectingMethod == ConnectingMethod.Connected_4) edgesPerNode = 2;
             else if (connectingMethod == ConnectingMethod.Connected_8) edgesPerNode = 4;
 
-
-            segments = new List<Segment>(width * height);
-            for (int id = 0; id < width * height; id++)
-                segments.Add(new Segment(id));
-
-
             nodes = new Node[width, height];
-            for (int x = 0; x < width; x++)
-                for (int y = 0; y < height; y++)
-                {
-                    nodes[x, y] = new Node(x, y, segments[y * width + x]);
-                    segments[y * width + x].AddNode(nodes[x, y]);
-                }
-
+            for (int j = 0; j < height; j++)
+                for (int i = 0; i < width; i++)
+                    nodes[i, j] = new Node();
+            segments = new Segment[width * height];
+            for (int i = 0; i < segments.Length; i++)
+                segments[i] = new Segment();
             edges = new Edge[edgesPerNode * width * height];
             for (int i = 0; i < edges.Length; i++)
                 edges[i] = new Edge();
@@ -42,6 +35,13 @@ namespace ImageSegmentationModel.Segmentation.NoSort
                 for (int i = 0; i < width; i++)
                 {
                     int c = j * width + i;
+                    // initialize node
+                    nodes[i, j].Segment = segments[c];
+                    // initialize component
+                    segments[c].Id = -1;
+                    segments[c].Count = 1;
+                    segments[c].SegmentWeight = 0;
+                    segments[c].First = segments[c].Last = nodes[i, j];
                     // initialize edge
                     if ((i + 1) < width)
                         CreateEdge(edgesPerNode * c, nodes[i, j], nodes[i + 1, j], (int)PixelComparator.Difference(pixels[i, j], pixels[i + 1, j], difType));
@@ -74,7 +74,7 @@ namespace ImageSegmentationModel.Segmentation.NoSort
                     if (MergePredicate(actual.A.Segment, actual.B.Segment, edgeWeight, param))
                     {
                         Segment c1, c2;
-                        if (actual.A.Segment.Nodes.Count >= actual.B.Segment.Nodes.Count)
+                        if (actual.A.Segment.Count >= actual.B.Segment.Count)
                         {
                             c1 = actual.A.Segment;
                             c2 = actual.B.Segment;
@@ -84,7 +84,7 @@ namespace ImageSegmentationModel.Segmentation.NoSort
                             c1 = actual.B.Segment;
                             c2 = actual.A.Segment;
                         }
-                        MergeSegment(c1, c2, edgeWeight, c1.SegmentWeight);
+                        MergeSegment(c1, c2, edgeWeight);
                     }
                     actual = actual.Next;
                 }
@@ -99,10 +99,10 @@ namespace ImageSegmentationModel.Segmentation.NoSort
                 while (actual != null)
                 {
                     if (actual.A.Segment != actual.B.Segment)
-                        if (actual.A.Segment.Nodes.Count < minSize || actual.B.Segment.Nodes.Count < minSize)
+                        if (actual.A.Segment.Count < minSize || actual.B.Segment.Count < minSize)
                         {
                             Segment s1, s2;
-                            if (actual.A.Segment.Nodes.Count >= actual.B.Segment.Nodes.Count)
+                            if (actual.A.Segment.Count >= actual.B.Segment.Count)
                             {
                                 s1 = actual.A.Segment;
                                 s2 = actual.B.Segment;
@@ -112,7 +112,7 @@ namespace ImageSegmentationModel.Segmentation.NoSort
                                 s1 = actual.B.Segment;
                                 s2 = actual.A.Segment;
                             }
-                            MergeSegment(s1, s2, edgeWeight, s1.SegmentWeight);
+                            MergeSegment(s1, s2, edgeWeight);
                         }
                     actual = actual.Next;
                 }
@@ -122,9 +122,17 @@ namespace ImageSegmentationModel.Segmentation.NoSort
         protected override int[,] ReindexSegments(int width, int height)
         {
             int[,] segments = new int[width, height];
-            for (int y = 0; y < height; y++)
-                for (int x = 0; x < width; x++)
-                    segments[x, y] = nodes[x, y].Segment.Id;
+            int idx = 0;
+            for (int j = 0; j < height; j++)
+                for (int i = 0; i < width; i++)
+                {
+                    if (nodes[i, j].Segment.Id < 0)
+                    {
+                        nodes[i, j].Segment.Id = idx;
+                        idx++;
+                    }
+                    segments[i, j] = nodes[i, j].Segment.Id;
+                }
             return segments;
         }
 
@@ -140,10 +148,19 @@ namespace ImageSegmentationModel.Segmentation.NoSort
             }
         }
 
-        protected void MergeSegment(Segment a, Segment b, double weight, double bNodesCredit)
+        protected void MergeSegment(Segment s1, Segment s2, double weight)
         {
-            a.AddNodes(b.Nodes, weight, bNodesCredit);
-            b.Clear();
+            Node nodeB = s2.First;
+            while (nodeB != null)
+            {
+                nodeB.Segment = s1;
+                nodeB = nodeB.Next;
+            }
+            s1.Last.Next = s2.First;
+            s1.Last = s2.Last;
+            s1.Count += s2.Count;
+            s1.SegmentWeight += weight + s2.SegmentWeight;
+            s1.MaxWeight = weight;
         }
 
         protected abstract bool MergePredicate(Segment a, Segment b, double weight, int param);

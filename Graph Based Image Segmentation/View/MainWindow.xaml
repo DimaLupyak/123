@@ -83,7 +83,7 @@
                 </GroupBox>
             </WrapPanel>
         </Expander>
-        <GroupBox Header="Вхідне зображення" Grid.Row="3" Background="#FFF3F3F3" Drop="Image_Drop" AllowDrop="True">
+        <GroupBox Header="Вхідне зображення" Grid.Row="3" Background="#FFF3F3F3" Drop="Image_Drop" MouseDoubleClick="Image_MouseDoubleClick" AllowDrop="True">
             <Grid>
                 <Image  Margin="0" Source="/Graph Based Image Segmentation;component/Resources/drop.png" Opacity="0.3" Visibility="{Binding OriginImage , Converter={StaticResource ShowDropImageConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="100"/>
                 <Image  Source="{Binding OriginImage.Image}" StretchDirection="DownOnly" Margin="0,5,0,0"/>

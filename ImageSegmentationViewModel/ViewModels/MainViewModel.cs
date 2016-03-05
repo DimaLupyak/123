@@ -142,16 +142,16 @@ namespace ImageSegmentation.ViewModel
         {
         }
 
-        private RelayCommand _openImageCommand;
+        private RelayCommand openImageCommand;
         public RelayCommand OpenImageCommand
         {
-            get { return _openImageCommand ?? (_openImageCommand = new RelayCommand(OpenImage)); }
+            get { return openImageCommand ?? (openImageCommand = new RelayCommand(OpenImage)); }
         }
 
-        private RelayCommand _saveImageCommand;
+        private RelayCommand saveImageCommand;
         public RelayCommand SaveImageCommand
         {
-            get { return _saveImageCommand ?? (_saveImageCommand = new RelayCommand(SaveImage)); }
+            get { return saveImageCommand ?? (saveImageCommand = new RelayCommand(SaveImage)); }
         }
 
         private RelayCommand gaussianImageCommand;
@@ -167,7 +167,7 @@ namespace ImageSegmentation.ViewModel
             get { return segmentImageCommand ?? (segmentImageCommand = new RelayCommand(SegmentImage)); }
         }
 
-        private void OpenImage()
+        public void OpenImage()
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             dlg.Filter = "Image files (*.gif;*.jpg;*.jpe;*.png;*.bmp;*.dib;*.tif;*.tifF;*.wmf;*.ras;*.eps;*.pcx;*psd;*.tga)|*.gif;*.jpg;*.jpe;*.png;*.bmp;*.dib;*.tif;*.tifF;*.wmf;*.ras;*.eps;*.pcx;*psd;*.tga";

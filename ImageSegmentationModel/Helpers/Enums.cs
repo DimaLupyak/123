@@ -13,7 +13,9 @@ namespace ImageSegmentationModel
         [Description("Simple Graph")]
         SimpleGhaph,
         [Description("Disjoint sets")]
-        DisjointSetDataGhaph
+        DisjointSetDataGhaph,
+        [Description("Singly linked list")]
+        SLL
     }
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum SortModification

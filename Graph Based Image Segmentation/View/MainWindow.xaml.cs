@@ -33,5 +33,10 @@ namespace ImageSegmentation.View
                 viewModel.OpenImage(files[0]);
             }
         }
+
+        private void Image_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            viewModel.OpenImage();
+        }
     }
 }

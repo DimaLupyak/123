@@ -7,7 +7,24 @@ namespace ImageSegmentationModel.Segmentation.NoSort
 {
     class Node
     {
-        public Segment Segment;
-        public Node Next;
+        #region constructors
+
+        public Node(int x, int y, Segment segment)
+        {
+            X = x;
+            Y = y;
+            Segment = segment;
+        }
+
+        #endregion
+
+        #region public members
+
+        public int X { get; private set; }
+        public int Y { get; private set; }
+
+        public Segment Segment { get; set; }
+
+        #endregion
     }
 }

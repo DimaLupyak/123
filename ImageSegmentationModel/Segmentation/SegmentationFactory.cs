@@ -65,6 +65,31 @@ namespace ImageSegmentationModel.Segmentation
                     }
                 }
             }
+            else if (dataStructure == DataStructure.SLL)
+            {
+                if (sortModification == SortModification.WithSorting)
+                {
+                    if (margeHeuristic == MargeHeuristic.K)
+                    {
+                        return new SLL.Fh.FhSegmentation();
+                    }
+                    else if (margeHeuristic == MargeHeuristic.Credit)
+                    {
+                        return new SLL.FhCredit.FhSegmentation();
+                    }
+                }
+                else if (sortModification == SortModification.NoSorting)
+                {
+                    if (margeHeuristic == MargeHeuristic.K)
+                    {
+                        return new NoSortSLL.Fh.FhSegmentation();
+                    }
+                    else if (margeHeuristic == MargeHeuristic.Credit)
+                    {
+                        return new NoSortSLL.FhCredit.FhSegmentation();
+                    }
+                }
+            }
             return new Classic.Fh.FhSegmentation();
         }
     }

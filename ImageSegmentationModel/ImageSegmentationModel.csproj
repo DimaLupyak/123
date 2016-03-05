@@ -106,6 +106,12 @@
     <Compile Include="Segmentation\NoSortDSD\FhCredit\FhSegmentation.cs" />
     <Compile Include="Segmentation\NoSortDSD\Fh\FhSegmentation.cs" />
     <Compile Include="Segmentation\NoSortDSD\Node.cs" />
+    <Compile Include="Segmentation\NoSortSLL\AFhSegmentationNoSort.cs" />
+    <Compile Include="Segmentation\NoSortSLL\Edge.cs" />
+    <Compile Include="Segmentation\NoSortSLL\FhCredit\FhSegmentation.cs" />
+    <Compile Include="Segmentation\NoSortSLL\Fh\FhSegmentation.cs" />
+    <Compile Include="Segmentation\NoSortSLL\Node.cs" />
+    <Compile Include="Segmentation\NoSortSLL\Segment.cs" />
     <Compile Include="Segmentation\NoSort\AFhSegmentationNoSort.cs" />
     <Compile Include="Segmentation\NoSort\Edge.cs" />
     <Compile Include="Segmentation\NoSort\FhCredit\FhSegmentation.cs" />
@@ -113,6 +119,12 @@
     <Compile Include="Segmentation\NoSort\Node.cs" />
     <Compile Include="Segmentation\NoSort\Segment.cs" />
     <Compile Include="Segmentation\SegmentationFactory.cs" />
+    <Compile Include="Segmentation\SLL\AFhSegmentationClassic.cs" />
+    <Compile Include="Segmentation\SLL\Edge.cs" />
+    <Compile Include="Segmentation\SLL\FhCredit\FhSegmentation.cs" />
+    <Compile Include="Segmentation\SLL\Fh\FhSegmentation.cs" />
+    <Compile Include="Segmentation\SLL\Node.cs" />
+    <Compile Include="Segmentation\SLL\Segment.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
