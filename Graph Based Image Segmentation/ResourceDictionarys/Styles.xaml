@@ -6,6 +6,7 @@
     <local:MaximizeVisibilityConverter x:Key="MaximizeVisibilityConverter"/>
     <local:MinimizeVisibilityConverter x:Key="MinimizeVisibilityConverter"/>
     <local:ParametrNameConverter x:Key="ParametrNameConverter"/>
+    <local:SaveIsEnabledConverter x:Key="SaveIsEnabledConverter"/>
     <Style TargetType="{x:Type local:ThemedWindow}" x:Key="ThemedWindowStyle">
         <Setter Property="Background" Value="{DynamicResource WindowBackgraundBrush}"/>
         <Setter Property="MinWidth" Value="200"/>
