@@ -5,6 +5,7 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" >
     <local:MaximizeVisibilityConverter x:Key="MaximizeVisibilityConverter"/>
     <local:MinimizeVisibilityConverter x:Key="MinimizeVisibilityConverter"/>
+    <local:ShowDropImageConverter x:Key="ShowDropImageConverter"/>
     <local:ParametrNameConverter x:Key="ParametrNameConverter"/>
     <local:SaveIsEnabledConverter x:Key="SaveIsEnabledConverter"/>
     <Style TargetType="{x:Type local:ThemedWindow}" x:Key="ThemedWindowStyle">

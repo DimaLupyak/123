@@ -43,10 +43,10 @@ namespace ImageSegmentation.ViewModel
             return bitSrc;
         }
 
-        private BitmapSource _image;
+        private BitmapSource image;
         public BitmapSource Image
         {
-            get { return _image ?? (_image = ToBitmapSource(Bitmap)); }
+            get { return image ?? (image = ToBitmapSource(Bitmap)); }
         }
     }
 }

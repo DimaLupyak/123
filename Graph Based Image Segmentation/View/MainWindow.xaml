@@ -7,10 +7,10 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:ImageSegmentation.View"
         mc:Ignorable="d"
-        Title="Image Segmentation" Height="491.73" Width="800"
+        Title="Image Segmentation" Height="500" Width="800" MinWidth="400"
         WindowStyle="None" AllowsTransparency="True" 
         Style="{DynamicResource ThemedWindowStyle}">
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -84,7 +84,10 @@
             </WrapPanel>
         </Expander>
         <GroupBox Header="Вхідне зображення" Grid.Row="3" Background="#FFF3F3F3" Drop="Image_Drop" AllowDrop="True">
-            <Image  Source="{Binding OriginImage.Image}" StretchDirection="DownOnly" Margin="0,5,0,0"/>
+            <Grid>
+                <Image  Margin="0" Source="/Graph Based Image Segmentation;component/Resources/drop.png" Opacity="0.3" Visibility="{Binding OriginImage , Converter={StaticResource ShowDropImageConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="100"/>
+                <Image  Source="{Binding OriginImage.Image}" StretchDirection="DownOnly" Margin="0,5,0,0"/>
+            </Grid>
         </GroupBox>
         <GroupBox Header="Результат" Grid.Row="3" Grid.Column="1">
             <Image  Source="{Binding SegmentedImage.Image}" StretchDirection="DownOnly" Margin="0,5,0,0" />
