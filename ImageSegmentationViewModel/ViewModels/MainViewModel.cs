@@ -29,7 +29,7 @@ namespace ImageSegmentation.ViewModel
             }
         }
 
-        private int k = 100;
+        private int k = 1000;
         public int K
         {
             get
@@ -55,7 +55,7 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("Sigma");
             }
         }
-        private int _minSize = 10;
+        private int _minSize = 200;
         public int MinSize
         {
             get
@@ -290,11 +290,9 @@ namespace ImageSegmentation.ViewModel
                 return commands.AsReadOnly();
             }
         }
-
         public bool CanProcessing
         {
             get { return canNewExecute && OriginImage != null; }
-
         }
         private bool canNewExecute = true;
         public bool CanNewExecute

@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:ImageSegmentation.View"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
         Title="Image Segmentation" Height="500" Width="800" MinWidth="400"
         WindowStyle="None" AllowsTransparency="True" 
@@ -86,11 +87,14 @@
         <GroupBox Header="Вхідне зображення" Grid.Row="3" Background="#FFF3F3F3" Drop="Image_Drop" MouseDoubleClick="Image_MouseDoubleClick" AllowDrop="True">
             <Grid>
                 <Image  Margin="0" Source="/Graph Based Image Segmentation;component/Resources/drop.png" Opacity="0.3" Visibility="{Binding OriginImage , Converter={StaticResource ShowDropImageConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="100"/>
-                <Image  Source="{Binding OriginImage.Image}" StretchDirection="DownOnly" Margin="0,5,0,0"/>
+                <Image  Source="{Binding OriginImage.Image}" StretchDirection="DownOnly" Margin="0,10,0,-5"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Результат" Grid.Row="3" Grid.Column="1">
-            <Image  Source="{Binding SegmentedImage.Image}" StretchDirection="DownOnly" Margin="0,5,0,0" />
+        <GroupBox Header="Результат" Grid.Row="3" Grid.Column="1"  Background="#FFF3F3F3">
+            <Grid>
+                <Image  Source="{Binding SegmentedImage.Image}" StretchDirection="DownOnly" Margin="0,5,0,0" />
+                <Image Opacity="0.5" Visibility="{Binding CanNewExecute , Converter={StaticResource ShowLoadingImageConverter}}"  gif:ImageBehavior.RepeatBehavior="Forever" gif:ImageBehavior.AnimatedSource="/Graph Based Image Segmentation;component/Resources/loading.gif" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="100"/>
+            </Grid>
         </GroupBox>
 
     </Grid>
