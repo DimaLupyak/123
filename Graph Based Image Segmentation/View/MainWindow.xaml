@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:ImageSegmentation.View"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
-        Title="Image Segmentation" Height="500" Width="800" MinWidth="400"
+        Title="Image Segmentation" Height="500" Width="822.358" MinWidth="400"
         WindowStyle="None" AllowsTransparency="True" 
         Style="{DynamicResource ThemedWindowStyle}">
 
@@ -39,6 +39,7 @@
                     <TextBox Text ="{Binding MinSize, Mode=TwoWay}" MinWidth="80"/>
                 </GroupBox>
             </WrapPanel>
+            <CheckBox x:Name="checkBox" Content="Випадкові кольори" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding RandomColor}"/>
         </WrapPanel>
 
 

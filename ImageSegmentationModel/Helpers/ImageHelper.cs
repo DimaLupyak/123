@@ -14,7 +14,7 @@ namespace ImageSegmentationModel
 
     public static class ImageHelper
     {
-        
+
 
         private static RGB[,] GetPixelsMatrix(byte[] pixels, int width, int height, int stride, int bytesPerPixel)
         {
@@ -31,42 +31,6 @@ namespace ImageSegmentationModel
                     }
                 }
             return matrix;
-        }
-
-        private static int[,] GetSegments(byte[] pixels, int width, int height, int stride, int bytesPerPixel)
-        {
-            int[,] segments = new int[width, height];
-            for (int j = 0; j < height; j++)
-                for (int i = 0; i < width; i++)
-                {
-                    int idx = j * stride + i * bytesPerPixel;
-                    int seg = 0;
-                    for (int b = 0; b < bytesPerPixel; b++)
-                        seg += (pixels[idx + b] << (b * 8));
-                    segments[i, j] = seg;
-                }
-            return segments;
-        }
-
-        private static void FillPixels(int[,] segments, byte[] pixels, int width, int height, int stride)
-        {
-            Random random = new Random();
-            Dictionary<int, byte[]> colors = new Dictionary<int, byte[]>();
-            for (int j = 0; j < height; j++)
-                for (int i = 0; i < width; i++)
-                {
-                    int idx = j * stride + i * 3;
-                    if (!colors.Keys.Contains(segments[i, j]))
-                    {
-                        byte[] rgb = new byte[3];
-                        random.NextBytes(rgb);
-                        colors.Add(segments[i, j], rgb);
-                    }
-                    byte[] color = colors[segments[i, j]];
-                    pixels[idx] = color[0];
-                    pixels[idx + 1] = color[1];
-                    pixels[idx + 2] = color[2];
-                }
         }
 
         private static void FillFilterPixels(RGB[,] filter, byte[] pixels, int width, int height, int stride)
@@ -165,6 +129,88 @@ namespace ImageSegmentationModel
             bitmap.UnlockBits(bitmapData);
 
             return bitmap;
+        }
+
+        private static void FillPixels(int[,] segments, byte[] pixels, int width, int height, int stride)
+        {
+            Random random = new Random();
+            Dictionary<int, byte[]> colors = new Dictionary<int, byte[]>();
+            for (int j = 0; j < height; j++)
+                for (int i = 0; i < width; i++)
+                {
+                    int idx = j * stride + i * 3;
+                    if (!colors.Keys.Contains(segments[i, j]))
+                    {
+                        byte[] rgb = new byte[3];
+                        random.NextBytes(rgb);
+                        colors.Add(segments[i, j], rgb);
+                    }
+                    byte[] color = colors[segments[i, j]];
+                    pixels[idx] = color[0];
+                    pixels[idx + 1] = color[1];
+                    pixels[idx + 2] = color[2];
+                }
+        }
+
+        public static Bitmap GetBitmap(int[,] segments, RGB[,] origin)
+        {
+            Bitmap bitmap = new Bitmap(segments.GetLength(0), segments.GetLength(1), PixelFormat.Format24bppRgb);
+
+            BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, bitmap.PixelFormat);
+            int bytes = Math.Abs(bitmapData.Stride) * bitmap.Height;
+            byte[] pixels = new byte[bytes];
+            Marshal.Copy(bitmapData.Scan0, pixels, 0, bytes);
+
+            FillPixels(segments, pixels, bitmapData.Width, bitmapData.Height, bitmapData.Stride, origin);
+
+            Marshal.Copy(pixels, 0, bitmapData.Scan0, bytes);
+            bitmap.UnlockBits(bitmapData);
+
+            return bitmap;
+        }
+
+        private static void FillPixels(int[,] segments, byte[] pixels, int width, int height, int stride, RGB[,] origin)
+        {
+            Dictionary<int, byte[]> colors = new Dictionary<int, byte[]>();
+            /*for (int j = 0; j < height; j++)
+                for (int i = 0; i < width; i++)
+                {
+                    int n = 0;
+                    int sum = 0;
+
+                }*/
+            for (int j = 0; j < height; j++)
+                for (int i = 0; i < width; i++)
+                {
+                    int idx = j * stride + i * 3;
+                    if (!colors.Keys.Contains(segments[i, j]))
+                    {
+                        byte[] rgb = new byte[3];
+                        rgb[0] = origin[i, j].Blue;
+                        rgb[1] = origin[i, j].Green;
+                        rgb[2] = origin[i, j].Red;
+                        colors.Add(segments[i, j], rgb);
+                    }
+                    byte[] color = colors[segments[i, j]];
+                    pixels[idx] = color[0];
+                    pixels[idx + 1] = color[1];
+                    pixels[idx + 2] = color[2];
+                }
+        }
+
+        private static int[,] GetSegments(byte[] pixels, int width, int height, int stride, int bytesPerPixel)
+        {
+            int[,] segments = new int[width, height];
+            for (int j = 0; j < height; j++)
+                for (int i = 0; i < width; i++)
+                {
+                    int idx = j * stride + i * bytesPerPixel;
+                    int seg = 0;
+                    for (int b = 0; b < bytesPerPixel; b++)
+                        seg += (pixels[idx + b] << (b * 8));
+                    segments[i, j] = seg;
+                }
+            return segments;
         }
 
         public static Bitmap GetFilterBitmap(RGB[,] filter)

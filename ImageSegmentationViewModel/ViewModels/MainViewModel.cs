@@ -28,7 +28,19 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("PerfomanceInfo");
             }
         }
-
+        private bool randomColor = true;
+        public bool RandomColor
+        {
+            get { return randomColor; }
+            set
+            {
+                if (value != randomColor)
+                {
+                    randomColor = value;
+                    RaisePropertyChanged("RandomColor");
+                }
+            }
+        }
         private int k = 1000;
         public int K
         {
@@ -225,7 +237,8 @@ namespace ImageSegmentation.ViewModel
                         GaussianFilter filter = new GaussianFilter();
                         filter.Filter(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, Sigma);
                         int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize, Connection, DifType, ref perfomanceInfo);
-                        SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments));
+                        if(RandomColor) SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments));
+                        else SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments, pixels));
                         RaisePropertyChanged("PerfomanceInfo");
                     }
                 }
