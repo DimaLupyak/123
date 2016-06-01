@@ -41,6 +41,19 @@ namespace ImageSegmentation.ViewModel
                 }
             }
         }
+        private bool makeBorders = true;
+        public bool MakeBorders
+        {
+            get { return makeBorders; }
+            set
+            {
+                if (value != makeBorders)
+                {
+                    makeBorders = value;
+                    RaisePropertyChanged("MakeBorders");
+                }
+            }
+        }
         private int k = 400;
         public int K
         {
@@ -238,7 +251,7 @@ namespace ImageSegmentation.ViewModel
                         filter.Filter(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, Sigma);
                         int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize, Connection, DifType, ref perfomanceInfo);
                         if(RandomColor) SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments));
-                        else SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments, pixels));
+                        else SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments, pixels, MakeBorders));
                         RaisePropertyChanged("PerfomanceInfo");
                     }
                 }

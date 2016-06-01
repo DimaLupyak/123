@@ -16,7 +16,7 @@ namespace ImageSegmentation.View
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return (ImageViewModel)value != null ? Visibility.Hidden : Visibility.Visible;
+            return (ImageViewModel)value != null ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

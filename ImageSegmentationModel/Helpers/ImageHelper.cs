@@ -152,7 +152,7 @@ namespace ImageSegmentationModel
                 }
         }
 
-        public static Bitmap GetBitmap(int[,] segments, RGB[,] origin)
+        public static Bitmap GetBitmap(int[,] segments, RGB[,] origin, bool makeBorders)
         {
             Bitmap bitmap = new Bitmap(segments.GetLength(0), segments.GetLength(1), PixelFormat.Format24bppRgb);
 
@@ -161,7 +161,7 @@ namespace ImageSegmentationModel
             byte[] pixels = new byte[bytes];
             Marshal.Copy(bitmapData.Scan0, pixels, 0, bytes);
 
-            FillPixels(segments, pixels, bitmapData.Width, bitmapData.Height, bitmapData.Stride, origin);
+            FillPixels(segments, pixels, bitmapData.Width, bitmapData.Height, bitmapData.Stride, origin, makeBorders);
 
             Marshal.Copy(pixels, 0, bitmapData.Scan0, bytes);
             bitmap.UnlockBits(bitmapData);
@@ -169,7 +169,7 @@ namespace ImageSegmentationModel
             return bitmap;
         }
 
-        private static void FillPixels(int[,] segments, byte[] pixels, int width, int height, int stride, RGB[,] origin)
+        private static void FillPixels(int[,] segments, byte[] pixels, int width, int height, int stride, RGB[,] origin, bool makeBorders)
         {
             Dictionary<int, byte[]> colors = new Dictionary<int, byte[]>();
             /*for (int j = 0; j < height; j++)
@@ -190,6 +190,19 @@ namespace ImageSegmentationModel
                         rgb[1] = origin[i, j].Green;
                         rgb[2] = origin[i, j].Red;
                         colors.Add(segments[i, j], rgb);
+                    }
+                    if (makeBorders && i != 0 && j != 0 && i != width - 1 && j != height - 1)
+                    {
+                        if (segments[i, j] != segments[i - 1, j] ||
+                            segments[i, j] != segments[i + 1, j] ||
+                            segments[i, j] != segments[i, j - 1] ||
+                            segments[i, j] != segments[i, j + 1])
+                            {
+                                pixels[idx] = 1;
+                                pixels[idx + 1] = 1;
+                                pixels[idx + 2] = 1;
+                                continue;
+                            }
                     }
                     byte[] color = colors[segments[i, j]];
                     pixels[idx] = color[0];

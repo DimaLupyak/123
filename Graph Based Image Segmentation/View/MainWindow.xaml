@@ -40,12 +40,14 @@
                 </GroupBox>
             </WrapPanel>
             <CheckBox x:Name="checkBox" Content="Випадкові кольори" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding RandomColor}"/>
+            <CheckBox  Content="Межі сегментів" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding MakeBorders}" Visibility="{Binding RandomColor , Converter={StaticResource ShowLoadingImageConverter}}"/>
+            
         </WrapPanel>
 
 
         <Expander  Grid.Row="1" Grid.ColumnSpan="2"
                   Header="Модифікації алгоритму" 
-                  IsExpanded="True" Style="{DynamicResource ExpanderStyle}">
+                  IsExpanded="True" Style="{DynamicResource ExpanderStyle}" Margin="0,5,0,0">
             <WrapPanel>
                 <GroupBox Header="Структура" ToolTip="Структура даних, що використовується при побудові графу">
                     <ComboBox Name="dataStructure" SelectedItem="{Binding Path=DataStructure}" MinWidth="80"/>
