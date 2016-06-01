@@ -41,7 +41,7 @@ namespace ImageSegmentation.ViewModel
                 }
             }
         }
-        private int k = 1000;
+        private int k = 400;
         public int K
         {
             get
@@ -67,7 +67,7 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("Sigma");
             }
         }
-        private int _minSize = 200;
+        private int _minSize = 100;
         public int MinSize
         {
             get
@@ -80,7 +80,7 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("MinSize");
             }
         }
-        private DataStructure dataStructure = DataStructure.SimpleGhaph;
+        private DataStructure dataStructure = DataStructure.SLL;
         public DataStructure DataStructure
         {
             get
@@ -94,7 +94,7 @@ namespace ImageSegmentation.ViewModel
             }
         }
 
-        private SortModification sortModification = SortModification.WithSorting;
+        private SortModification sortModification = SortModification.NoSorting;
         public SortModification SortModification
         {
             get
@@ -108,7 +108,7 @@ namespace ImageSegmentation.ViewModel
             }
         }
 
-        private MargeHeuristic margeHeuristic = MargeHeuristic.K;
+        private MargeHeuristic margeHeuristic = MargeHeuristic.Credit;
         public MargeHeuristic MargeHeuristic
         {
             get
