@@ -13,7 +13,7 @@ namespace ImageSegmentationModel.Segmentation.NoSortSLL.FhCredit
         {
             if (a == b)
                 return false; 
-            return weight + a.SegmentWeight + b.SegmentWeight <= credit;
+            return weight + a.SegmentWeight + b.SegmentWeight < credit;
         }
     }
 }

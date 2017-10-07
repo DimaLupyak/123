@@ -13,7 +13,7 @@ namespace ImageSegmentationModel.Segmentation.NoSortSLL.Fh
         {
             if (a == b)
                 return false;
-            return weight <= MInt(a,b,k);
+            return weight < MInt(a,b,k);
         }
         protected double T(Segment s, int k)
         {

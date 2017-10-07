@@ -50,11 +50,11 @@ namespace ImageSegmentationModel
         /// </summary>
         public byte Blue { get; set; }
 
-        public RGB(byte R, byte G, byte B)
+        public RGB(byte R, byte G, byte B) : this()
         {
-            this.Red = R;
-            this.Green = G;
-            this.Blue = B;
+            Red = R;
+            Green = G;
+            Blue = B;
         }
 
         public override bool Equals(Object obj)

@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -185,6 +186,11 @@ namespace ImageSegmentation.ViewModel
             get { return gaussianImageCommand ?? (gaussianImageCommand = new RelayCommand(GaussianImage)); }
         }
 
+        private RelayCommand superPixelImageCommand;
+        public RelayCommand SuperPixelImageCommand
+        {
+            get { return superPixelImageCommand ?? (superPixelImageCommand = new RelayCommand(SuperPixelImage)); }
+        }
 
         private RelayCommand segmentImageCommand;
         public RelayCommand SegmentImageCommand
@@ -205,7 +211,7 @@ namespace ImageSegmentation.ViewModel
             }
 
         }
-        
+
         public void OpenImage(string fileName)
         {
             try
@@ -217,7 +223,7 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("PerfomanceInfo");
                 RaisePropertyChanged("CanProcessing");
             }
-            catch (Exception){}            
+            catch (Exception) { }
         }
 
         private void SaveImage()
@@ -225,7 +231,7 @@ namespace ImageSegmentation.ViewModel
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
             dlg.DefaultExt = ".png";
             dlg.FileName = "Sigmented Image";
-            dlg.Title="Збереження сегментованого зображення";
+            dlg.Title = "Збереження сегментованого зображення";
             dlg.Filter = "Image files (*.gif;*.jpg;*.jpe;*.png;*.bmp;*.dib;*.tif;*.tifF;*.wmf;*.ras;*.eps;*.pcx;*psd;*.tga)|*.gif;*.jpg;*.jpe;*.png;*.bmp;*.dib;*.tif;*.tifF;*.wmf;*.ras;*.eps;*.pcx;*psd;*.tga| JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif|PNG Image|*.png";
             Nullable<bool> result = dlg.ShowDialog();
 
@@ -238,6 +244,7 @@ namespace ImageSegmentation.ViewModel
 
         public void SegmentImage()
         {
+
             Task task = Task.Factory.StartNew(() =>
             {
                 CanNewExecute = false;
@@ -247,10 +254,22 @@ namespace ImageSegmentation.ViewModel
                     RGB[,] pixels = ImageHelper.GetPixels(OriginImage.Bitmap);
                     if (pixels != null)
                     {
+                        var input = OriginImage.Bitmap;
+                        int[] klabels;
+                        int numlabels;
+                        var superPixel = new SLICO().PerformSLICO_ForGivenK(
+                            ref input,
+                            out klabels,
+                            out numlabels,
+                            5000,
+                            Color.Red);
+                        BitmapData bitmapData = superPixel.LockBits(new Rectangle(0, 0, superPixel.Width, superPixel.Height), ImageLockMode.ReadOnly, superPixel.PixelFormat);
+                        var superpixels = ImageHelper.ToMatrix(klabels, bitmapData.Width, bitmapData.Height,
+                            bitmapData.Stride);
                         GaussianFilter filter = new GaussianFilter();
                         filter.Filter(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, Sigma);
-                        int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize, Connection, DifType, ref perfomanceInfo);
-                        if(RandomColor) SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments));
+                        int[,] segments = segmentation.BuildSegments(OriginImage.Bitmap.Width, OriginImage.Bitmap.Height, pixels, K, MinSize, Connection, DifType, ref perfomanceInfo, superpixels);
+                        if (RandomColor) SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments));
                         else SegmentedImage = new ImageViewModel(ImageHelper.GetBitmap(segments, pixels, MakeBorders));
                         RaisePropertyChanged("PerfomanceInfo");
                     }
@@ -263,6 +282,35 @@ namespace ImageSegmentation.ViewModel
             });
         }
 
+        public void SuperPixelImage()
+        {
+            Task.Factory.StartNew(() =>
+            {
+
+                ClearPerfomanceInfo();
+                RaisePropertyChanged("PerfomanceInfo");
+                CanNewExecute = false;
+                try
+                {
+                    var input = OriginImage.Bitmap;
+                    int[] klabels;
+                    int numlabels;
+                    var superPixel = new SLICO().PerformSLICO_ForGivenK(
+                        ref input,
+                        out klabels,
+                        out numlabels,
+                        K,
+                        Color.Red,
+                        20);
+                    SegmentedImage = new ImageViewModel(superPixel);
+                }
+                catch { }
+                finally
+                {
+                    CanNewExecute = true;
+                }
+            });
+        }
 
         protected void ClearPerfomanceInfo()
         {
@@ -312,6 +360,7 @@ namespace ImageSegmentation.ViewModel
                     commands.Add(OpenImageCommand);
                     commands.Add(SegmentImageCommand);
                     commands.Add(GaussianImageCommand);
+                    commands.Add(SuperPixelImageCommand);
                 }
                 return commands.AsReadOnly();
             }

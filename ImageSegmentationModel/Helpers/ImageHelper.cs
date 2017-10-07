@@ -47,6 +47,30 @@ namespace ImageSegmentationModel
                 }
         }
 
+        public static T[,] ToMatrix<T>(T[] array, int width, int height, int stride)
+        {
+            var matrix = new T[width, height];
+            for (var j = 0; j < height; j++)
+                for (var i = 0; i < width; i++)
+                {
+                    var idx = j * height + i;
+                    matrix[i, j] = array[idx];
+                }
+            return matrix;
+        }
+
+        public static T[] ToArray<T>(T[,] matrix, int width, int height, int stride)
+        {
+            var array = new T[width * height];
+            for (var j = 0; j < height; j++)
+                for (var i = 0; i < width; i++)
+                {
+                    var idx = j * height + i;
+                    array[idx] = matrix[i, j];
+                }
+            return array;
+        }
+
         public static RGB[,] GetPixels(Bitmap bitmap)
         {
             BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
@@ -186,9 +210,22 @@ namespace ImageSegmentationModel
                     if (!colors.Keys.Contains(segments[i, j]))
                     {
                         byte[] rgb = new byte[3];
-                        rgb[0] = origin[i, j].Blue;
-                        rgb[1] = origin[i, j].Green;
-                        rgb[2] = origin[i, j].Red;
+                        long red = 0;
+                        long blue = 0;
+                        long grean = 0;
+                        var count = 0;
+                        for (var x = 0; x < height; x++)
+                            for (var y = 0; y < width; y++)
+                            {
+                                if (segments[i, j] != segments[y, x]) continue;
+                                red += origin[y, x].Red;
+                                blue += origin[y, x].Blue;
+                                grean += origin[y, x].Green;
+                                count++;
+                            }
+                        rgb[0] = (byte)(blue / count);
+                        rgb[1] = (byte)(grean / count);
+                        rgb[2] = (byte)(red / count);
                         colors.Add(segments[i, j], rgb);
                     }
                     if (makeBorders && i != 0 && j != 0 && i != width - 1 && j != height - 1)
@@ -197,12 +234,12 @@ namespace ImageSegmentationModel
                             segments[i, j] != segments[i + 1, j] ||
                             segments[i, j] != segments[i, j - 1] ||
                             segments[i, j] != segments[i, j + 1])
-                            {
-                                pixels[idx] = 1;
-                                pixels[idx + 1] = 1;
-                                pixels[idx + 2] = 1;
-                                continue;
-                            }
+                        {
+                            pixels[idx] = 1;
+                            pixels[idx + 1] = 1;
+                            pixels[idx + 2] = 1;
+                            continue;
+                        }
                     }
                     byte[] color = colors[segments[i, j]];
                     pixels[idx] = color[0];

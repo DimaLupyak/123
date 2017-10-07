@@ -27,9 +27,10 @@
             <Button Content="Відкрити" Command="{Binding OpenImageCommand}" IsEnabled="{Binding CanNewExecute}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="10,10,5,10" />
             <Button Content="Зберегти" Command="{Binding SaveImageCommand}" IsEnabled="{Binding SegmentedImage , Converter={StaticResource SaveIsEnabledConverter}}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,10,5,10" />
             <Button Content="Сегментувати" Command="{Binding SegmentImageCommand}" IsEnabled="{Binding CanProcessing}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,10,5,10" />
+            <Button Content="Суперпыксель" Command="{Binding SuperPixelImageCommand}" IsEnabled="{Binding CanProcessing}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,10,5,10" />
             <Button Content="Фильтр Гаусса" Command="{Binding GaussianImageCommand}" IsEnabled="{Binding CanProcessing}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,10,10,10" />
             <WrapPanel >
-                <GroupBox Header="{Binding MargeHeuristic, Converter={StaticResource ParametrNameConverter}}" ToolTip="Параметр алгоритму сегментації">
+                <GroupBox Header="{Binding MargeHeuristic}" ToolTip="Параметр алгоритму сегментації">
                     <TextBox Text ="{Binding K, Mode=TwoWay}" MinWidth="80"/>
                 </GroupBox>
                 <GroupBox Header="sigma" ToolTip="діаметр зглажування Гаусса">

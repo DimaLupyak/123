@@ -7,7 +7,6 @@
     <local:MinimizeVisibilityConverter x:Key="MinimizeVisibilityConverter"/>
     <local:ShowLoadingImageConverter x:Key="ShowLoadingImageConverter"/>
     <local:ShowDropImageConverter x:Key="ShowDropImageConverter"/>
-    <local:ParametrNameConverter x:Key="ParametrNameConverter"/>
     <local:SaveIsEnabledConverter x:Key="SaveIsEnabledConverter"/>
     <Style TargetType="{x:Type local:ThemedWindow}" x:Key="ThemedWindowStyle">
         <Setter Property="Background" Value="{DynamicResource WindowBackgraundBrush}"/>

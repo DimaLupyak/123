@@ -13,7 +13,7 @@ namespace ImageSegmentationModel.Segmentation.NoSort
         protected Edge[] edges;
         protected Edge[] edgePockets;
 
-        protected override void BuildGraph(int width, int height, RGB[,] pixels, ConnectingMethod connectingMethod, ColorDifference difType)
+        protected override void BuildGraph(int width, int height, RGB[,] pixels, ConnectingMethod connectingMethod, ColorDifference difType, int[,] superPixels = null)
         {
             int edgesPerNode = 0;
             if (connectingMethod == ConnectingMethod.Connected_4) edgesPerNode = 2;

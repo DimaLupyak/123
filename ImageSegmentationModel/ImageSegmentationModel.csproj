@@ -91,7 +91,6 @@
     <Compile Include="Segmentation\AFhSegmentation.cs" />
     <Compile Include="Segmentation\Classic\AFhSegmentationClassic.cs" />
     <Compile Include="Segmentation\Classic\Edge.cs" />
-    <Compile Include="Segmentation\Classic\FhCredit\FhSegmentation.cs" />
     <Compile Include="Segmentation\Classic\Node.cs" />
     <Compile Include="Segmentation\Classic\Segment.cs" />
     <Compile Include="Segmentation\DSD\AFhSegmentationDSD.cs" />
@@ -99,7 +98,6 @@
     <Compile Include="Segmentation\DSD\FhCredit\FhSegmentation.cs" />
     <Compile Include="Segmentation\DSD\Fh\FhSegmentation.cs" />
     <Compile Include="Segmentation\DSD\Node.cs" />
-    <Compile Include="Segmentation\Classic\Fh\FhSegmentation.cs" />
     <Compile Include="Segmentation\IFhSegmentation.cs" />
     <Compile Include="Segmentation\NoSortDSD\AFhSegmentationNoSortDSD.cs" />
     <Compile Include="Segmentation\NoSortDSD\Edge.cs" />
@@ -125,8 +123,12 @@
     <Compile Include="Segmentation\SLL\Fh\FhSegmentation.cs" />
     <Compile Include="Segmentation\SLL\Node.cs" />
     <Compile Include="Segmentation\SLL\Segment.cs" />
+    <Compile Include="SLICO.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Segmentation\Classic\FhCredit\" />
+    <Folder Include="Segmentation\Classic\Fh\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -11,7 +11,7 @@ namespace ImageSegmentationModel.Segmentation.DSD
         protected Node[,] nodes;
         protected List<Edge> edges;
 
-        protected override void BuildGraph(int width, int height, RGB[,] pixels, ConnectingMethod connectingMethod, ColorDifference difType)
+        protected override void BuildGraph(int width, int height, RGB[,] pixels, ConnectingMethod connectingMethod, ColorDifference difType, int[,] superPixels = null)
         {
             nodes = new Node[width, height];
             for (int x = 0; x < width; x++)

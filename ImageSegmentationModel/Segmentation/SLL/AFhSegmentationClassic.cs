@@ -12,22 +12,18 @@ namespace ImageSegmentationModel.Segmentation.SLL
         protected List<Edge> edges;
         protected Segment[] segments;
 
-        protected override void BuildGraph(int width, int height, RGB[,] pixels, ConnectingMethod connectingMethod, ColorDifference difType)
+        protected override void BuildGraph(int width, int height, RGB[,] pixels, ConnectingMethod connectingMethod, ColorDifference difType, int[,] superPixels = null)
         {
             segments = new Segment[width * height];
-            for (int id = 0; id < width * height; id++)
+            for (var id = 0; id < width * height; id++)
                 segments[id] = new Segment();
 
             nodes = new Node[width, height];
-            for (int x = 0; x < width; x++)
-                for (int y = 0; y < height; y++)
-                    nodes[x, y] = new Node();
-
-            edges = new List<Edge>();
-            for (int j = 0; j < height; j++)
-                for (int i = 0; i < width; i++)
+            for (var j = 0; j < height; j++)
+                for (var i = 0; i < width; i++)
                 {
-                    int c = j * width + i;
+                    var c = j * width + i;
+                    nodes[i, j] = new Node();
                     // initialize node
                     nodes[i, j].Segment = segments[c];
                     // initialize component
@@ -35,20 +31,69 @@ namespace ImageSegmentationModel.Segmentation.SLL
                     segments[c].Count = 1;
                     segments[c].SegmentWeight = 0;
                     segments[c].First = segments[c].Last = nodes[i, j];
+                    segments[c].SumR = pixels[i, j].Red;
+                    segments[c].SumG = pixels[i, j].Green;
+                    segments[c].SumB = pixels[i, j].Blue;
+                }
+                    
 
+            edges = new List<Edge>();
+            for (var j = 0; j < height; j++)
+                for (var i = 0; i < width; i++)
+                {
                     if (i < (width - 1))
-                        edges.Add(new Edge(nodes[i, j], nodes[i + 1, j], PixelComparator.Difference(pixels[i, j], pixels[i + 1, j], difType))); // Right                        
+                    {
+                        var diff = PixelComparator.Difference(nodes[i, j].Segment.RGB, nodes[i + 1, j].Segment.RGB, difType);
+                        if (superPixels[i, j] != superPixels[i + 1, j])
+                        {
+                            edges.Add(new Edge(nodes[i, j], nodes[i + 1, j], diff)); // Right                        
+                        }
+                        else if (nodes[i, j].Segment != nodes[i + 1, j].Segment)
+                        {
+                            MergeSegment(nodes[i, j].Segment, nodes[i + 1, j].Segment, 0);
+                        }
+                    }
+
 
                     if (j < (height - 1))
-                        edges.Add(new Edge(nodes[i, j], nodes[i, j + 1], PixelComparator.Difference(pixels[i, j], pixels[i, j + 1], difType))); // Down
-
+                    {
+                        var diff = PixelComparator.Difference(nodes[i, j].Segment.RGB, nodes[i, j + 1].Segment.RGB, difType);
+                        if (superPixels[i, j] != superPixels[i, j + 1])
+                        {
+                            edges.Add(new Edge(nodes[i, j], nodes[i, j + 1], diff)); // Down
+                        }
+                        else if (nodes[i, j].Segment != nodes[i, j + 1].Segment)
+                        {
+                            MergeSegment(nodes[i, j].Segment, nodes[i, j + 1].Segment, 0);
+                        }
+                    }
+                        
                     if (connectingMethod == ConnectingMethod.Connected_8)
                     {
                         if (j > 0 && i < (width - 1))
-                            edges.Add(new Edge(nodes[i, j], nodes[i + 1, j - 1], PixelComparator.Difference(pixels[i, j], pixels[i + 1, j - 1], difType))); // Up-Right
-
+                        {
+                            var diff = PixelComparator.Difference(nodes[i, j].Segment.RGB, nodes[i + 1, j - 1].Segment.RGB, difType);
+                            if (superPixels[i, j] != superPixels[i + 1, j - 1])
+                            {
+                                edges.Add(new Edge(nodes[i, j], nodes[i + 1, j - 1], diff)); // Up-Right
+                            }
+                            else if (nodes[i, j].Segment != nodes[i + 1, j - 1].Segment)
+                            {
+                                MergeSegment(nodes[i, j].Segment, nodes[i + 1, j - 1].Segment, 0);
+                            }
+                        }
                         if (j < (height - 1) && i < (width - 1))
-                            edges.Add(new Edge(nodes[i, j], nodes[i + 1, j + 1], PixelComparator.Difference(pixels[i, j], pixels[i + 1, j + 1], difType))); // Down-Right
+                        {
+                            var diff = PixelComparator.Difference(nodes[i, j].Segment.RGB, nodes[i + 1, j + 1].Segment.RGB, difType);
+                            if (superPixels[i, j] != superPixels[i + 1, j + 1])
+                            {
+                                edges.Add(new Edge(nodes[i, j], nodes[i + 1, j + 1], diff)); // Down-Right
+                            }
+                            else if (nodes[i, j].Segment != nodes[i + 1, j + 1].Segment)
+                            {
+                                MergeSegment(nodes[i, j].Segment, nodes[i + 1, j + 1].Segment, 0);
+                            }
+                        }
                     }
                 }
         }
@@ -120,6 +165,9 @@ namespace ImageSegmentationModel.Segmentation.SLL
             s1.Last.Next = s2.First;
             s1.Last = s2.Last;
             s1.Count += s2.Count;
+            s1.SumR += s2.SumR;
+            s1.SumG += s2.SumG;
+            s1.SumB += s2.SumB;
             s1.SegmentWeight += weight + s2.SegmentWeight;
             s1.MaxWeight = weight;
         }

@@ -12,7 +12,7 @@ namespace ImageSegmentationModel.Segmentation.Classic
         protected List<Edge> edges;
         protected List<Segment> segments;
 
-        protected override void BuildGraph(int width, int height, RGB[,] pixels, ConnectingMethod connectingMethod, ColorDifference difType)
+        protected override void BuildGraph(int width, int height, RGB[,] pixels, ConnectingMethod connectingMethod, ColorDifference difType, int[,] superPixels = null)
         {
             segments = new List<Segment>(width * height);
             for (int id = 0; id < width * height; id++)

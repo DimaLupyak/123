@@ -21,11 +21,11 @@ namespace ImageSegmentationModel.Segmentation
                 {
                     if (margeHeuristic == MargeHeuristic.K)
                     {
-                        return new Classic.Fh.FhSegmentation();
+                        return new NoSort.Fh.FhSegmentation();
                     }
                     else if (margeHeuristic == MargeHeuristic.Credit)
                     {
-                        return new Classic.FhCredit.FhSegmentation();
+                        return new NoSort.FhCredit.FhSegmentation();
                     }
                 }
                 else if (sortModification == SortModification.NoSorting)
@@ -90,7 +90,7 @@ namespace ImageSegmentationModel.Segmentation
                     }
                 }
             }
-            return new Classic.Fh.FhSegmentation();
+            return new NoSort.Fh.FhSegmentation();
         }
     }
 }

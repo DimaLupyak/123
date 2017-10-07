@@ -118,7 +118,6 @@
     <Compile Include="Converters\ShowLoadingImageConverter.cs" />
     <Compile Include="Converters\ShowDropImageConverter.cs" />
     <Compile Include="Converters\SaveIsEnabledConverter.cs" />
-    <Compile Include="Converters\ParametrNameConverter.cs" />
     <Compile Include="GridHelpers.cs" />
     <Compile Include="View\ThemedWindow.cs" />
     <Compile Include="Converters\ThemedWindowConverters.cs" />

@@ -11,6 +11,18 @@ namespace ImageSegmentationModel.Segmentation.SLL
         public double SegmentWeight;
         public double MaxWeight;
         public Node First, Last;
+        public long SumR;
+        public long SumG;
+        public long SumB;
 
+        public RGB RGB 
+        { 
+            get 
+            { 
+                return new RGB((byte)(SumR / Count), 
+                               (byte)(SumG / Count), 
+                               (byte)(SumB / Count)); 
+            } 
+        }
     }
 }
