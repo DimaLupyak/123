@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ImageSegmentationModel</RootNamespace>
     <AssemblyName>ImageSegmentationModel</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -89,33 +90,13 @@
     <Compile Include="PerfomanceInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Segmentation\AFhSegmentation.cs" />
-    <Compile Include="Segmentation\Classic\AFhSegmentationClassic.cs" />
-    <Compile Include="Segmentation\Classic\Edge.cs" />
-    <Compile Include="Segmentation\Classic\Node.cs" />
-    <Compile Include="Segmentation\Classic\Segment.cs" />
-    <Compile Include="Segmentation\DSD\AFhSegmentationDSD.cs" />
-    <Compile Include="Segmentation\DSD\Edge.cs" />
-    <Compile Include="Segmentation\DSD\FhCredit\FhSegmentation.cs" />
-    <Compile Include="Segmentation\DSD\Fh\FhSegmentation.cs" />
-    <Compile Include="Segmentation\DSD\Node.cs" />
     <Compile Include="Segmentation\IFhSegmentation.cs" />
-    <Compile Include="Segmentation\NoSortDSD\AFhSegmentationNoSortDSD.cs" />
-    <Compile Include="Segmentation\NoSortDSD\Edge.cs" />
-    <Compile Include="Segmentation\NoSortDSD\FhCredit\FhSegmentation.cs" />
-    <Compile Include="Segmentation\NoSortDSD\Fh\FhSegmentation.cs" />
-    <Compile Include="Segmentation\NoSortDSD\Node.cs" />
     <Compile Include="Segmentation\NoSortSLL\AFhSegmentationNoSort.cs" />
     <Compile Include="Segmentation\NoSortSLL\Edge.cs" />
     <Compile Include="Segmentation\NoSortSLL\FhCredit\FhSegmentation.cs" />
     <Compile Include="Segmentation\NoSortSLL\Fh\FhSegmentation.cs" />
     <Compile Include="Segmentation\NoSortSLL\Node.cs" />
     <Compile Include="Segmentation\NoSortSLL\Segment.cs" />
-    <Compile Include="Segmentation\NoSort\AFhSegmentationNoSort.cs" />
-    <Compile Include="Segmentation\NoSort\Edge.cs" />
-    <Compile Include="Segmentation\NoSort\FhCredit\FhSegmentation.cs" />
-    <Compile Include="Segmentation\NoSort\Fh\FhSegmentation.cs" />
-    <Compile Include="Segmentation\NoSort\Node.cs" />
-    <Compile Include="Segmentation\NoSort\Segment.cs" />
     <Compile Include="Segmentation\SegmentationFactory.cs" />
     <Compile Include="Segmentation\SLL\AFhSegmentationClassic.cs" />
     <Compile Include="Segmentation\SLL\Edge.cs" />
@@ -125,10 +106,7 @@
     <Compile Include="Segmentation\SLL\Segment.cs" />
     <Compile Include="SLICO.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Segmentation\Classic\FhCredit\" />
-    <Folder Include="Segmentation\Classic\Fh\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

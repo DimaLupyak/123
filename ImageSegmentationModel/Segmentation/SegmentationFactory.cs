@@ -4,93 +4,40 @@ using System.Linq;
 using System.Text;
 
 namespace ImageSegmentationModel.Segmentation
-{    
+{
     public class SegmentationFactory
     {
         private static SegmentationFactory instance;
         public static SegmentationFactory Instance
         {
             get { return instance ?? (instance = new SegmentationFactory()); }
-        }       
+        }
 
-        public IFhSegmentation GetFhSegmentation(DataStructure dataStructure, SortModification sortModification, MargeHeuristic margeHeuristic)
+        public IFhSegmentation GetFhSegmentation(SortModification sortModification, MargeHeuristic margeHeuristic)
         {
-            if(dataStructure == DataStructure.SimpleGhaph)
+            if (sortModification == SortModification.WithSorting)
             {
-                if(sortModification == SortModification.WithSorting)
+                if (margeHeuristic == MargeHeuristic.K)
                 {
-                    if (margeHeuristic == MargeHeuristic.K)
-                    {
-                        return new NoSort.Fh.FhSegmentation();
-                    }
-                    else if (margeHeuristic == MargeHeuristic.Credit)
-                    {
-                        return new NoSort.FhCredit.FhSegmentation();
-                    }
+                    return new SLL.Fh.FhSegmentation();
                 }
-                else if (sortModification == SortModification.NoSorting)
+                else if (margeHeuristic == MargeHeuristic.Credit)
                 {
-                    if (margeHeuristic == MargeHeuristic.K)
-                    {
-                        return new NoSort.Fh.FhSegmentation();
-                    }
-                    else if (margeHeuristic == MargeHeuristic.Credit)
-                    {
-                        return new NoSort.FhCredit.FhSegmentation();
-                    }
+                    return new SLL.FhCredit.FhSegmentation();
                 }
             }
-            else if (dataStructure == DataStructure.DisjointSetDataGhaph)
+            else if (sortModification == SortModification.NoSorting)
             {
-                if (sortModification == SortModification.WithSorting)
+                if (margeHeuristic == MargeHeuristic.K)
                 {
-                    if (margeHeuristic == MargeHeuristic.K)
-                    {
-                        return new DSD.Fh.FhSegmentation();
-                    }
-                    else if (margeHeuristic == MargeHeuristic.Credit)
-                    {
-                        return new DSD.FhCredit.FhSegmentation();
-                    }
+                    return new NoSortSLL.Fh.FhSegmentation();
                 }
-                else if (sortModification == SortModification.NoSorting)
+                else if (margeHeuristic == MargeHeuristic.Credit)
                 {
-                    if (margeHeuristic == MargeHeuristic.K)
-                    {
-                        return new NoSortDSD.Fh.FhSegmentation();
-                    }
-                    else if (margeHeuristic == MargeHeuristic.Credit)
-                    {
-                        return new NoSortDSD.FhCredit.FhSegmentation();
-                    }
+                    return new NoSortSLL.FhCredit.FhSegmentation();
                 }
             }
-            else if (dataStructure == DataStructure.SLL)
-            {
-                if (sortModification == SortModification.WithSorting)
-                {
-                    if (margeHeuristic == MargeHeuristic.K)
-                    {
-                        return new SLL.Fh.FhSegmentation();
-                    }
-                    else if (margeHeuristic == MargeHeuristic.Credit)
-                    {
-                        return new SLL.FhCredit.FhSegmentation();
-                    }
-                }
-                else if (sortModification == SortModification.NoSorting)
-                {
-                    if (margeHeuristic == MargeHeuristic.K)
-                    {
-                        return new NoSortSLL.Fh.FhSegmentation();
-                    }
-                    else if (margeHeuristic == MargeHeuristic.Credit)
-                    {
-                        return new NoSortSLL.FhCredit.FhSegmentation();
-                    }
-                }
-            }
-            return new NoSort.Fh.FhSegmentation();
+            return new NoSortSLL.FhCredit.FhSegmentation();
         }
     }
 }

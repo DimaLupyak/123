@@ -27,7 +27,7 @@
             <Button Content="Відкрити" Command="{Binding OpenImageCommand}" IsEnabled="{Binding CanNewExecute}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="10,10,5,10" />
             <Button Content="Зберегти" Command="{Binding SaveImageCommand}" IsEnabled="{Binding SegmentedImage , Converter={StaticResource SaveIsEnabledConverter}}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,10,5,10" />
             <Button Content="Сегментувати" Command="{Binding SegmentImageCommand}" IsEnabled="{Binding CanProcessing}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,10,5,10" />
-            <Button Content="Суперпыксель" Command="{Binding SuperPixelImageCommand}" IsEnabled="{Binding CanProcessing}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,10,5,10" />
+            <Button Content="Суперпіксель" Command="{Binding SuperPixelImageCommand}" IsEnabled="{Binding CanProcessing}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,10,5,10" />
             <Button Content="Фильтр Гаусса" Command="{Binding GaussianImageCommand}" IsEnabled="{Binding CanProcessing}" Style="{DynamicResource SimpleButtonStyle}" VerticalAlignment="Center" Margin="0,10,10,10" />
             <WrapPanel >
                 <GroupBox Header="{Binding MargeHeuristic}" ToolTip="Параметр алгоритму сегментації">
@@ -38,6 +38,9 @@
                 </GroupBox>
                 <GroupBox Header="min" ToolTip="Мінімальний розмір сегменту">
                     <TextBox Text ="{Binding MinSize, Mode=TwoWay}" MinWidth="80"/>
+                </GroupBox>
+                <GroupBox Header="N" ToolTip="Кількість суперпікселів">
+                    <TextBox Text ="{Binding N, Mode=TwoWay}" MinWidth="80"/>
                 </GroupBox>
             </WrapPanel>
             <CheckBox x:Name="checkBox" Content="Випадкові кольори" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding RandomColor}"/>
@@ -50,9 +53,6 @@
                   Header="Модифікації алгоритму" 
                   IsExpanded="True" Style="{DynamicResource ExpanderStyle}" Margin="0,5,0,0">
             <WrapPanel>
-                <GroupBox Header="Структура" ToolTip="Структура даних, що використовується при побудові графу">
-                    <ComboBox Name="dataStructure" SelectedItem="{Binding Path=DataStructure}" MinWidth="80"/>
-                </GroupBox>
                 <GroupBox Header="Сортування" ToolTip="Модифікація сортування ребер">
                     <ComboBox Name="sortModification" SelectedItem="{Binding Path=SortModification}" MinWidth="80"/>
                 </GroupBox>
@@ -82,6 +82,9 @@
                 </GroupBox>
                 <GroupBox Header="Злиття малих сегментів">
                     <TextBlock Text="{Binding PerfomanceInfo.SmallSegmentMargingPerfomance}"></TextBlock>
+                </GroupBox>
+                <GroupBox Header="Побудова суперпікселів">
+                    <TextBlock Text="{Binding PerfomanceInfo.SuperpixelPerfomance}"></TextBlock>
                 </GroupBox>
                 <GroupBox Header="Загальний час алгоритму">
                     <TextBlock Text="{Binding PerfomanceInfo.SummaryPerfomance}"></TextBlock>

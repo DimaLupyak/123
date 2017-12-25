@@ -14,7 +14,6 @@ namespace ImageSegmentation.View
             InitializeComponent();
             viewModel = new MainViewModel();
             this.DataContext = viewModel;
-            dataStructure.ItemsSource = Enum.GetValues(typeof(DataStructure));
             sortModification.ItemsSource = Enum.GetValues(typeof(SortModification));
             margeHeuristic.ItemsSource = Enum.GetValues(typeof(MargeHeuristic));
             connectingMethods.ItemsSource = Enum.GetValues(typeof(ConnectingMethod));

@@ -68,6 +68,19 @@ namespace ImageSegmentation.ViewModel
                 RaisePropertyChanged("K");
             }
         }
+        private int n = 1000;
+        public int N
+        {
+            get
+            {
+                return n;
+            }
+            set
+            {
+                n = value;
+                RaisePropertyChanged("N");
+            }
+        }
         private float _sigma = 0.8f;
         public float Sigma
         {
@@ -92,19 +105,6 @@ namespace ImageSegmentation.ViewModel
             {
                 _minSize = value;
                 RaisePropertyChanged("MinSize");
-            }
-        }
-        private DataStructure dataStructure = DataStructure.SLL;
-        public DataStructure DataStructure
-        {
-            get
-            {
-                return dataStructure;
-            }
-            set
-            {
-                dataStructure = value;
-                RaisePropertyChanged("DataStructure");
             }
         }
 
@@ -136,7 +136,7 @@ namespace ImageSegmentation.ViewModel
             }
         }
 
-        private ConnectingMethod connection = ConnectingMethod.Connected_8;
+        private ConnectingMethod connection = ConnectingMethod.Connected_4;
         public ConnectingMethod Connection
         {
             get
@@ -250,19 +250,22 @@ namespace ImageSegmentation.ViewModel
                 CanNewExecute = false;
                 try
                 {
-                    IFhSegmentation segmentation = SegmentationFactory.Instance.GetFhSegmentation(DataStructure, SortModification, MargeHeuristic);
+                    IFhSegmentation segmentation = SegmentationFactory.Instance.GetFhSegmentation(SortModification, MargeHeuristic);
                     RGB[,] pixels = ImageHelper.GetPixels(OriginImage.Bitmap);
                     if (pixels != null)
                     {
                         var input = OriginImage.Bitmap;
                         int[] klabels;
                         int numlabels;
+                        var watch = Stopwatch.StartNew();                        
                         var superPixel = new SLICO().PerformSLICO_ForGivenK(
                             ref input,
                             out klabels,
                             out numlabels,
-                            5000,
+                            N,
                             Color.Red);
+                        watch.Stop();
+                        perfomanceInfo.SuperpixelPerfomance = watch.ElapsedMilliseconds;
                         BitmapData bitmapData = superPixel.LockBits(new Rectangle(0, 0, superPixel.Width, superPixel.Height), ImageLockMode.ReadOnly, superPixel.PixelFormat);
                         var superpixels = ImageHelper.ToMatrix(klabels, bitmapData.Width, bitmapData.Height,
                             bitmapData.Stride);
@@ -299,7 +302,7 @@ namespace ImageSegmentation.ViewModel
                         ref input,
                         out klabels,
                         out numlabels,
-                        K,
+                        N,
                         Color.Red,
                         20);
                     SegmentedImage = new ImageViewModel(superPixel);
@@ -318,6 +321,7 @@ namespace ImageSegmentation.ViewModel
             perfomanceInfo.BuildingPerfomance = 0;
             perfomanceInfo.SmallSegmentMargingPerfomance = 0;
             perfomanceInfo.SortingPerfomance = 0;
+            perfomanceInfo.SuperpixelPerfomance = 0;
         }
 
 

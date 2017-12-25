@@ -12,6 +12,7 @@ namespace ImageSegmentationModel
         public long SortingPerfomance { get; set; }
         public long AlgorithmPerfomance { get; set; }
         public long SmallSegmentMargingPerfomance { get; set; }
+        public long SuperpixelPerfomance { get; set; }
         public long SummaryPerfomance
         {
             get
@@ -19,7 +20,8 @@ namespace ImageSegmentationModel
                 return BuildingPerfomance
                      + SortingPerfomance
                      + AlgorithmPerfomance
-                     + SmallSegmentMargingPerfomance;
+                     + SmallSegmentMargingPerfomance
+                     + SuperpixelPerfomance;
             }
         }
     }

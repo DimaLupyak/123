@@ -41,7 +41,7 @@ namespace ImageSegmentationModel.Segmentation.NoSortSLL
             edges = new Edge[edgesPerNode * width * height];
             for (int i = 0; i < edges.Length; i++)
                 edges[i] = new Edge();
-            edgePockets = new Edge[256];
+            edgePockets = new Edge[2560];
 
             for (int j = 0; j < height; j++)
                 for (int i = 0; i < width; i++)
@@ -53,7 +53,7 @@ namespace ImageSegmentationModel.Segmentation.NoSortSLL
                     {
                         if (superPixels[i, j] != superPixels[i + 1, j])
                         {
-                            var diff = PixelComparator.Difference(pixels[i, j], pixels[i + 1, j], difType);
+                            var diff = PixelComparator.Difference(pixels[i, j], pixels[i + 1, j], difType)*100;
                             CreateEdge(edgesPerNode * c, nodes[i, j], nodes[i + 1, j], (int)diff);
                         }
                         else if (nodes[i, j].Segment != nodes[i + 1, j].Segment)
@@ -65,7 +65,7 @@ namespace ImageSegmentationModel.Segmentation.NoSortSLL
                     {
                         if (superPixels[i, j] != superPixels[i, j + 1])
                         {
-                            var diff = PixelComparator.Difference(pixels[i, j], pixels[i, j + 1], difType);
+                            var diff = PixelComparator.Difference(pixels[i, j], pixels[i, j + 1], difType) * 100;
                             CreateEdge(edgesPerNode * c + 1, nodes[i, j], nodes[i, j + 1], (int)diff);
                         }
                         else if (nodes[i, j].Segment != nodes[i, j + 1].Segment)
@@ -81,7 +81,7 @@ namespace ImageSegmentationModel.Segmentation.NoSortSLL
                         {
                             if (superPixels[i, j] != superPixels[i + 1, j - 1])
                             {
-                                var diff = PixelComparator.Difference(pixels[i, j], pixels[i + 1, j - 1], difType);
+                                var diff = PixelComparator.Difference(pixels[i, j], pixels[i + 1, j - 1], difType) * 100;
                                 CreateEdge(edgesPerNode * c + 2, nodes[i, j], nodes[i + 1, j - 1], (int)diff);
                             }
                             else if (nodes[i, j].Segment != nodes[i + 1, j - 1].Segment)
@@ -93,7 +93,7 @@ namespace ImageSegmentationModel.Segmentation.NoSortSLL
                         {
                             if (superPixels[i, j] != superPixels[i + 1, j + 1])
                             {
-                                var diff = PixelComparator.Difference(pixels[i, j], pixels[i + 1, j + 1], difType);
+                                var diff = PixelComparator.Difference(pixels[i, j], pixels[i + 1, j + 1], difType) * 100;
                                 CreateEdge(edgesPerNode * c + 3, nodes[i, j], nodes[i + 1, j + 1], (int)diff);
                             }
                             else if (nodes[i, j].Segment != nodes[i + 1, j + 1].Segment)

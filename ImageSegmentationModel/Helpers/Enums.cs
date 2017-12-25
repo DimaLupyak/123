@@ -7,16 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImageSegmentationModel
 {
-    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    public enum DataStructure
-    {
-        [Description("Simple Graph")]
-        SimpleGhaph,
-        [Description("Disjoint sets")]
-        DisjointSetDataGhaph,
-        [Description("Singly linked list")]
-        SLL
-    }
+
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum SortModification
     {
